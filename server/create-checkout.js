@@ -24,8 +24,7 @@ exports.handler = async function(event) {
     if (!cart || cart.length === 0) {
       return { statusCode: 400, body: "Cart is empty" };
     }
-
-    // Build line items
+    // Build product line items
     const line_items = cart.map(item => {
       const product = products.find(p => p.id === item.id);
       if (!product) throw new Error(`Product not found: ${item.id}`);
@@ -38,6 +37,30 @@ exports.handler = async function(event) {
         },
         quantity: item.quantity
       };
+    });
+
+    // Add platform fee and tax
+    const subtotal = line_items.reduce((sum, item) => sum + item.price_data.unit_amount * item.quantity, 0);
+    const feeAmount = Math.round(subtotal * 0.05);
+    const taxAmount = Math.round(subtotal * 0.0825);
+
+    line_items.push({
+      price_data: {
+        currency: "usd",
+        product_data: { name: "Platform fee" },
+        unit_amount: feeAmount
+      },
+      quantity: 1
+    });
+
+    line_items.push({
+      price_data: {
+        currency: "usd",
+        product_data: { name: "Sales tax (8.25%)" },
+        unit_amount: taxAmount
+      },
+      quantity: 1
+
     });
 
     const session = await stripe.checkout.sessions.create({
