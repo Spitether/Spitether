@@ -1,15 +1,29 @@
 import Stripe from "stripe";
-import products from "../data/products.json" assert { type: "json" };
+
+const products = [
+  {
+    id: "sample-001",
+    name: "Earthy Sample Project",
+    price: 2500,
+    stock: 5,
+    image: "images/products/sample-001.jpg",
+    category: "digital",
+    description: "A placeholder item to test your store."
+  }
+];
 
 export const handler = async (event) => {
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-    const { items } = JSON.parse(event.body);
+    const { cart } = JSON.parse(event.body);
 
-    // Match cart items with product data
-    const lineItems = items.map(cartItem => {
+    const lineItems = cart.map(cartItem => {
       const product = products.find(p => p.id === cartItem.id);
+
+      if (!product) {
+        throw new Error(`Product not found: ${cartItem.id}`);
+      }
 
       return {
         price_data: {
@@ -25,8 +39,8 @@ export const handler = async (event) => {
     });
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
       mode: "payment",
+      payment_method_types: ["card"],
       line_items: lineItems,
       success_url: "https://shop-spitether.netlify.app/success.html",
       cancel_url: "https://shop-spitether.netlify.app/cancel.html",
@@ -36,6 +50,7 @@ export const handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({ url: session.url }),
     };
+
   } catch (error) {
     return {
       statusCode: 500,

@@ -1,7 +1,18 @@
 // server/create-checkout.js
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const fs = require("fs");
-const path = require("path");
+
+// Hardcoded products (can't use fs in serverless)
+const products = [
+  {
+    id: "sample-001",
+    name: "Earthy Sample Project",
+    price: 2500,
+    stock: 5,
+    image: "images/products/sample-001.jpg",
+    category: "digital",
+    description: "A placeholder item to test your store."
+  }
+];
 
 exports.handler = async function(event) {
   if (event.httpMethod !== "POST") {
@@ -13,10 +24,6 @@ exports.handler = async function(event) {
     if (!cart || cart.length === 0) {
       return { statusCode: 400, body: "Cart is empty" };
     }
-
-    // Load products.json
-    const productsPath = path.join(__dirname, "..", "data", "products.json");
-    const products = JSON.parse(fs.readFileSync(productsPath, "utf8"));
 
     // Build line items
     const line_items = cart.map(item => {
@@ -36,8 +43,8 @@ exports.handler = async function(event) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items,
-      success_url: "https://your-domain.com/checkout.html?status=success",
-      cancel_url: "https://your-domain.com/cart.html?status=cancelled"
+      success_url: "https://shop-spitether.netlify.app/success.html",
+      cancel_url: "https://shop-spitether.netlify.app/cancel.html"
     });
 
     return {
