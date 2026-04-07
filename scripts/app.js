@@ -42,7 +42,7 @@ function renderProducts(products, container) {
 
   products.forEach(p => {
     const card = document.createElement("a");
-    card.href = `/product.html?id=${p.id}`;
+    card.href = `product.html?id=${p.id}`;
     card.className = "product-card";
 
     card.innerHTML = `
