@@ -14,22 +14,33 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Send cart to backend
-    const response = await fetch("/.netlify/functions/create-checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cart })
-    });
+    try {
+      // Send cart to backend
+    const response = await fetch("/api/create-checkout", {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cart })
+      });
 
-    const data = await response.json();
+      if (!response.ok) {
+        const body = await response.text();
+        console.error("Checkout request failed", response.status, body);
+        alert("There was an issue creating your checkout session.");
+        return;
+      }
 
-    if (!data.url) {
-      console.error("No checkout URL returned:", data);
+      const data = await response.json();
+
+      if (!data.url) {
+        console.error("No checkout URL returned:", data);
+        alert("There was an issue creating your checkout session.");
+        return;
+      }
+
+      // Redirect to Stripe Checkout
+      window.location.href = data.url;
+    } catch (err) {
+      console.error("Checkout request failed", err);
       alert("There was an issue creating your checkout session.");
-      return;
     }
-
-    // Redirect to Stripe Checkout
-    window.location.href = data.url;
   });
 });
