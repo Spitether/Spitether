@@ -133,3 +133,21 @@ function updateTotals(cart, products) {
   taxEl.textContent = `$${(tax / 100).toFixed(2)}`;
   totalEl.textContent = `$${(total / 100).toFixed(2)}`;
 }
+
+async function loadCart() {
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  // Load full product data
+  const products = await fetch("./data/products.json")
+    .then(res => res.json());
+
+  const cartItems = cart.map(item => {
+    const product = products.find(p => p.id === item.id);
+    return {
+      ...product,
+      quantity: item.quantity
+    };
+  });
+
+  renderCart(cartItems);
+}
