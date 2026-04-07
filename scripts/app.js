@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const grid = document.getElementById("product-grid");
 
   // Load products
-  const products = await fetch("/data/products.json")
+  const products = await fetch("data/products.json")
     .then(res => res.json())
     .catch(err => {
       console.error("Error loading products.json", err);
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Load categories (optional)
   let categories = [];
   try {
-    categories = await fetch("/data/categories.json").then(res => res.json());
+    categories = await fetch("data/categories.json").then(res => res.json());
   } catch (e) {
     console.warn("No categories.json found");
   }

@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Load products
-  const products = await fetch("/data/products.json")
+  const products = await fetch("data/products.json")
     .then(res => res.json())
     .catch(err => {
       console.error("Error loading products.json", err);
