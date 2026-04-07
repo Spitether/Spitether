@@ -33,6 +33,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderProducts(products, grid);
 });
 
+function buildPageUrl(file, query = "") {
+  let base = window.location.pathname;
+
+  if (base.endsWith("/")) {
+    return `${base}${file}${query}`;
+  }
+
+  if (base.endsWith(".html")) {
+    base = base.substring(0, base.lastIndexOf("/") + 1);
+    return `${base}${file}${query}`;
+  }
+
+  return `${base}/${file}${query}`;
+}
+
 
 /* ------------------------------
    RENDER PRODUCT CARDS
@@ -42,7 +57,7 @@ function renderProducts(products, container) {
 
   products.forEach(p => {
     const card = document.createElement("a");
-    card.href = `product.html?id=${p.id}`;
+    card.href = buildPageUrl("product.html", `?id=${p.id}`);
     card.className = "product-card";
 
     card.innerHTML = `
