@@ -1,5 +1,3 @@
-/* product.js — loads single product page */
-
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("product.js loaded");
 
@@ -11,22 +9,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const product = await fetch(`/api/products?id=${productId}`)
+  // Load all products
+  const products = await fetch("./data/products.json")
     .then(res => res.json())
     .catch(err => {
-      console.error("Error loading product", err);
-      return null;
+      console.error("Error loading products.json", err);
+      return [];
     });
 
+  // Find the matching product
+  const product = products.find(p => p.id === productId);
+
   if (!product) {
-    console.error("Product not found or load error:", productId);
+    console.error("Product not found:", productId);
     return;
   }
 
   // Fill in page content
   document.getElementById("product-image").src = product.image;
   document.getElementById("product-title").textContent = product.name;
-  document.getElementById("product-price").textContent = `$${(product.price / 100).toFixed(2)}`;
+  document.getElementById("product-price").textContent = `$${product.price.toFixed(2)}`;
   document.getElementById("product-description").textContent = product.description;
 
   const stockEl = document.getElementById("product-stock");
@@ -34,40 +36,64 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const addBtn = document.getElementById("add-to-cart");
 
-  // Disable button if sold out
   if (product.stock === 0) {
     addBtn.disabled = true;
     addBtn.textContent = "Sold Out";
   }
 
-  // Add to cart logic
   addBtn.addEventListener("click", () => {
     addToCart(product);
   });
 });
 
+// MOBILE CART BAR SETUP
+function setupMobileCartBar(product) {
+  const bar = document.getElementById("mobile-cart-bar");
+  const title = document.getElementById("mobile-cart-title");
+  const price = document.getElementById("mobile-cart-price");
+  const btn = document.getElementById("mobile-add-to-cart");
 
-/* ------------------------------
-   ADD TO CART FUNCTION
---------------------------------*/
-function addToCart(product) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  title.textContent = product.name;
+  price.textContent = `$${product.price.toFixed(2)}`;
 
-  const existing = cart.find(item => item.id === product.id);
+  btn.addEventListener("click", () => addToCart(product));
 
-  // Prevent overselling
-  if (existing && existing.quantity >= product.stock) {
-    alert("No more stock available.");
-    return;
-  }
+  // Show bar only after scrolling
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+      bar.style.transform = "translateY(0)";
+      bar.style.opacity = "1";
+    } else {
+      bar.style.transform = "translateY(100%)";
+      bar.style.opacity = "0";
+    }
+  });
+}
 
-  if (existing) {
-    existing.quantity++;
-  } else {
-    cart.push({ id: product.id, quantity: 1 });
-  }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
+function setupImageGallery(product) {
+  const mainImage = document.getElementById("product-image");
+  const row = document.getElementById("thumbnail-row");
 
-  alert("Added to cart!");
+  // If product has no gallery, skip
+  if (!product.images || product.images.length <= 1) return;
+
+  product.images.forEach((imgSrc, index) => {
+    const thumb = document.createElement("img");
+    thumb.src = imgSrc;
+
+    if (index === 0) thumb.classList.add("active-thumb");
+
+    thumb.addEventListener("click", () => {
+      mainImage.src = imgSrc;
+
+      // Update active state
+      document.querySelectorAll(".thumbnail-row img")
+        .forEach(t => t.classList.remove("active-thumb"));
+
+      thumb.classList.add("active-thumb");
+    });
+
+    row.appendChild(thumb);
+  });
 }

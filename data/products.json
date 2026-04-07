@@ -1,10 +1,10 @@
 [
   {
     "id": "sample-001",
-    "name": "Earthy Sample Project",
-    "price": 2500,
+    "name": "Sample Project",
+    "price": 250,
     "stock": 5,
-    "image": "images/products/sample-001.jpg",
+    "image": ["images/products/sample-001.jpg"],
     "category": "digital",
     "description": "A placeholder item to test your store."
   }

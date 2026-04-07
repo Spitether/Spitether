@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const grid = document.getElementById("product-grid");
 
   // Load products
-  const products = await fetch("/api/products")
+  const products = await fetch("/data/products.json")
     .then(res => res.json())
     .catch(err => {
       console.error("Error loading products", err);
@@ -65,13 +65,13 @@ function renderProducts(products, container) {
     card.className = "product-card reveal-on-scroll";
 
     card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p>$${(p.price / 100).toFixed(2)}</p>
-      <span class="tag ${p.stock === 0 ? "sold-out" : ""}">
-        ${p.stock === 0 ? "Sold Out" : "In Stock"}
-      </span>
-    `;
+    <img src="${p.image}" alt="${p.name}">
+    <h3>${p.name}</h3>
+    <p>$${p.price.toFixed(2)}</p>
+    <span class="tag ${p.stock === 0 ? "sold-out" : ""}">
+    ${p.stock === 0 ? "Sold Out" : "In Stock"}
+  </span>
+`;
 
     container.appendChild(card);
   });
