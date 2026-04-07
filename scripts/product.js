@@ -97,3 +97,25 @@ function setupImageGallery(product) {
     row.appendChild(thumb);
   });
 }
+
+function addToCart(product) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const existing = cart.find(item => item.id === product.id);
+
+  // Prevent overselling
+  if (existing && existing.quantity >= product.stock) {
+    alert("No more stock available.");
+    return;
+  }
+
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push({ id: product.id, quantity: 1 });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  alert("Added to cart!");
+}
