@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product – Your Store</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/product.css">
+</head>
+<body class="page page-product">
+  <header class="site-header">
+    <div class="logo"><a href="index.html">Your Store</a></div>
+    <nav class="nav">
+      <a href="index.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html" class="nav-cart">Cart</a>
+    </nav>
+  </header>
+
+  <main class="main product-main">
+    <section class="product-detail" id="product-detail">
+      <div class="product-image-wrap">
+        <img id="product-image" alt="">
+      </div>
+      <div class="product-info">
+        <h1 id="product-title"></h1>
+        <p id="product-price" class="product-price"></p>
+        <p id="product-stock" class="product-stock"></p>
+        <p id="product-description" class="product-description"></p>
+
+        <button id="add-to-cart" class="btn-primary">Add to cart</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a href="policies.html">Policies</a>
+    <span>© Your Store</span>
+  </footer>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/product.js"></script>
+</body>
+</html>

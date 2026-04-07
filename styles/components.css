@@ -1,0 +1,157 @@
+/* ================================
+   COMPONENTS.CSS — EARTHY UI
+   Cards, buttons, tags, filters
+   ================================ */
+
+/* ---------- PRODUCT CARD ---------- */
+.product-card {
+  background-color: var(--white);
+  border: 1px solid var(--olive);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  transition: 0.2s ease;
+  display: block;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.product-card img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.product-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+
+.product-card p {
+  font-size: 1rem;
+  color: var(--forest);
+}
+
+/* ---------- TAGS ---------- */
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-top: 8px;
+}
+
+.tag.sold-out {
+  background-color: var(--terracotta);
+  color: var(--white);
+}
+
+/* ---------- FILTERS ---------- */
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+#category-filters button {
+  background-color: var(--white);
+  border: 1px solid var(--olive);
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+#category-filters button:hover {
+  background-color: var(--olive);
+  color: var(--white);
+}
+
+/* ---------- SEARCH BAR ---------- */
+#search-bar input {
+  padding: 8px 14px;
+  border: 1px solid var(--olive);
+  border-radius: 20px;
+  width: 200px;
+}
+
+/* ---------- CART ITEM ---------- */
+.cart-item {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--olive);
+}
+
+.cart-item img {
+  width: 120px;
+  border-radius: 6px;
+  border: 1px solid var(--olive);
+}
+
+.cart-item-info h3 {
+  margin-bottom: 6px;
+}
+
+.cart-item-info p {
+  margin-bottom: 4px;
+}
+
+/* ---------- QUANTITY BUTTONS ---------- */
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qty-controls button {
+  background-color: var(--forest);
+  color: var(--white);
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.qty-controls button:hover {
+  background-color: var(--olive);
+}
+
+.success-container,
+.cancel-container {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.success-container h1,
+.cancel-container h1 {
+  font-size: 32px;
+  margin-bottom: 12px;
+  color: #3a2f1b;
+}
+
+.success-container p,
+.cancel-container p {
+  color: #6a5c48;
+  margin-bottom: 24px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  background-color: #d8c7a1;
+  color: #3a2f1b;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #cbb48f;
+}
+

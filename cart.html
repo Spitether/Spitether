@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cart – Your Store</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/cart.css">
+</head>
+<body class="page page-cart">
+  <header class="site-header">
+    <div class="logo"><a href="index.html">Your Store</a></div>
+    <nav class="nav">
+      <a href="index.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html" class="nav-cart active">Cart</a>
+    </nav>
+  </header>
+
+  <main class="main cart-main">
+    <section class="cart-items" id="cart-items">
+      <!-- Filled by cart.js -->
+    </section>
+
+    <aside class="cart-summary">
+      <h2>Order Summary</h2>
+      <div class="summary-row">
+        <span>Subtotal</span><span id="summary-subtotal"></span>
+      </div>
+      <div class="summary-row">
+        <span>Fees</span><span id="summary-fees"></span>
+      </div>
+      <div class="summary-row">
+        <span>Tax</span><span id="summary-tax"></span>
+      </div>
+      <div class="summary-row summary-total">
+        <span>Total</span><span id="summary-total"></span>
+      </div>
+      <button id="checkout-button" class="btn-primary">Checkout</button>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <a href="policies.html">Policies</a>
+    <span>© Your Store</span>
+  </footer>
+
+  <script src="scripts/utils.js"></script>
+  <script src="scripts/cart.js"></script>
+  <script src="scripts/checkout.js"></script>
+</body>
+</html>
