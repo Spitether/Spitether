@@ -1,0 +1,61 @@
+/* ---------- CART ITEM ---------- */
+.cart-item {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--olive);
+}
+
+.cart-item img {
+  width: 120px;
+  border-radius: 6px;
+  border: 1px solid var(--olive);
+}
+
+.cart-item-info h3 {
+  margin-bottom: 6px;
+}
+
+.cart-item-info p {
+  margin-bottom: 4px;
+}
+
+/* ---------- QUANTITY BUTTONS ---------- */
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qty-controls button {
+  background-color: var(--forest);
+  color: var(--white);
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.qty-controls button:hover {
+  background-color: var(--olive);
+}
+
+.success-container,
+.cancel-container {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.success-container h1,
+.cancel-container h1 {
+  font-size: 32px;
+  margin-bottom: 12px;
+  color: #3a2f1b;
+}
+
+.success-container p,
+.cancel-container p {
+  color: #6a5c48;
+  margin-bottom: 24px;
+}

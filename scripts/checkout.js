@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Send cart to backend
-    const response = await fetch("/server/create-checkout-session.js", {
+    const response = await fetch("/.netlify/functions/create-checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cart })
@@ -32,16 +32,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // Redirect to Stripe Checkout
     window.location.href = data.url;
   });
-});
-
-document.getElementById("checkout-btn").addEventListener("click", async () => {
-  const items = JSON.parse(localStorage.getItem("cart")) || [];
-
-  const response = await fetch("/.netlify/functions/create-checkout", {
-    method: "POST",
-    body: JSON.stringify({ items }),
-  });
-
-  const data = await response.json();
-  window.location.href = data.url;
 });
