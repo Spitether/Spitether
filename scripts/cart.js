@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   // Load products
-  const products = await fetch("data/products.json")
+  const products = await fetch("/api/products")
     .then(res => res.json())
     .catch(err => {
-      console.error("Error loading products.json", err);
+      console.error("Error loading products", err);
       return [];
     });
 

@@ -1,16 +1,5 @@
 import Stripe from "stripe";
-
-const products = [
-  {
-    id: "sample-001",
-    name: "Earthy Sample Project",
-    price: 2500,
-    stock: 5,
-    image: "images/products/sample-001.jpg",
-    category: "digital",
-    description: "A placeholder item to test your store."
-  }
-];
+import { supabaseService } from "../lib/supabase.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -19,14 +8,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
+      console.error("Missing Stripe secret key in environment");
+      return res.status(500).json({ error: "Missing STRIPE_SECRET_KEY in Vercel environment" });
+    }
+
+    const stripe = new Stripe(secretKey);
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     const { cart } = body;
+
+    const { data: products, error: productsError } = await supabaseService
+      .from("products")
+      .select("*");
+
+    if (productsError) {
+      throw productsError;
+    }
 
     const lineItems = cart.map(cartItem => {
       const product = products.find(p => p.id === cartItem.id);
       if (!product) {
         throw new Error(`Product not found: ${cartItem.id}`);
+      }
+
+      if (cartItem.quantity > product.stock) {
+        throw new Error(`Requested quantity for ${product.name} exceeds stock`);
       }
 
       return {
@@ -72,6 +79,9 @@ export default async function handler(req, res) {
       mode: "payment",
       payment_method_types: ["card"],
       line_items: lineItems,
+      metadata: {
+        cart: JSON.stringify(cart)
+      },
       success_url: `${origin}/success.html`,
       cancel_url: `${origin}/cancel.html`
     });

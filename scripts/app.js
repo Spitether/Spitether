@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const grid = document.getElementById("product-grid");
 
   // Load products
-  const products = await fetch("data/products.json")
+  const products = await fetch("/api/products")
     .then(res => res.json())
     .catch(err => {
-      console.error("Error loading products.json", err);
+      console.error("Error loading products", err);
       return [];
     });
 
@@ -31,6 +31,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Render product cards
   renderProducts(products, grid);
+
+  // Start the scroll and cursor effects
+  initSpotlight();
+  initScrollReveal();
 });
 
 function buildPageUrl(file, query = "") {
@@ -58,7 +62,7 @@ function renderProducts(products, container) {
   products.forEach(p => {
     const card = document.createElement("a");
     card.href = buildPageUrl("product.html", `?id=${p.id}`);
-    card.className = "product-card";
+    card.className = "product-card reveal-on-scroll";
 
     card.innerHTML = `
       <img src="${p.image}" alt="${p.name}">
@@ -117,4 +121,54 @@ function renderSearchBar(products) {
   });
 
   searchContainer.appendChild(input);
+}
+
+function initSpotlight() {
+  const spotlight = document.createElement("div");
+  spotlight.className = "spotlight-overlay";
+  document.body.appendChild(spotlight);
+
+  let fadeTimeout;
+  const resetFade = () => {
+    clearTimeout(fadeTimeout);
+    fadeTimeout = setTimeout(() => {
+      spotlight.style.opacity = "0";
+    }, 1500);
+  };
+
+  document.addEventListener("mousemove", e => {
+    spotlight.style.left = `${e.clientX}px`;
+    spotlight.style.top = `${e.clientY}px`;
+    spotlight.style.opacity = "0.65";
+    spotlight.style.transform = `translate(-50%, -50%) scale(1)`;
+    resetFade();
+  });
+
+  document.addEventListener("mouseleave", () => {
+    spotlight.style.opacity = "0";
+  });
+
+  document.addEventListener("scroll", () => {
+    spotlight.style.opacity = "0.45";
+    resetFade();
+  }, { passive: true });
+}
+
+function initScrollReveal() {
+  const revealTargets = document.querySelectorAll("section, .product-card");
+  revealTargets.forEach(el => el.classList.add("reveal-on-scroll"));
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("reveal-visible");
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.18,
+    rootMargin: "0px 0px -80px 0px"
+  });
+
+  revealTargets.forEach(el => observer.observe(el));
 }

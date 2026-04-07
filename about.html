@@ -3,11 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>About – Your Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/layout.css">
   <link rel="stylesheet" href="styles/components.css">
 </head>
 <body class="page page-about">
+  <div id="transition-overlay"></div>
   <header class="site-header">
     <div class="logo"><a href="index.html">Your Store</a></div>
     <nav class="nav">
@@ -21,7 +25,11 @@
   <main class="main">
     <section class="content-narrow">
       <h1>About</h1>
-      <p><!-- your story here --></p>
+      <p>Welcome to my small corner of the internet. I started this store to give pre-loved items a second life while exploring my own journey as a seller. Every piece is hand-selected, inspected with care, and chosen for its character, quality, and potential to be loved again.</p>
+      <p>---</p>
+      <p> While the shop currently focuses on pre-loved clothing, I am developing new products lines inspired by my engineering and game development background. Expect future releases such as digital study resources and game assets. This shop is growing along side me to learn, build and create.</p>
+      <p>---</p>
+      <p>Sustainability is at the heart of the things I do. To help reduce my environmental impact, <strong>1% of every sale is donated toward carbon emission reduction efforts.</strong></p>
     </section>
   </main>
 
@@ -29,5 +37,7 @@
     <a href="policies.html">Policies</a>
     <span>© Your Store</span>
   </footer>
+  <script src="scripts/spotlight.js"></script>
+  <script src="scripts/transition.js"></script>
 </body>
 </html>

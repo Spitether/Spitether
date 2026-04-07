@@ -3,11 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Contact – Your Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/layout.css">
   <link rel="stylesheet" href="styles/components.css">
 </head>
 <body class="page page-contact">
+  <div id="transition-overlay"></div>
   <header class="site-header">
     <div class="logo"><a href="index.html">Your Store</a></div>
     <nav class="nav">
@@ -19,16 +23,81 @@
   </header>
 
   <main class="main">
-    <section class="content-narrow">
-      <h1>Contact</h1>
-      <p>Email: <a href="mailto:you@example.com">you@example.com</a></p>
-      <!-- later: form if you want -->
-    </section>
+    <section class="content-narrow contact-wrapper">
+  <h1>Contact</h1>
+  <p>
+    Have a question about an item, an order, or the shop in general? I’m always
+    happy to help. Since this is a student-run business, response times may vary,
+    but I do my best to reply within 24–48 hours.
+  </p>
+
+  <!-- FLOATING SUCCESS TOAST -->
+  <div id="toast" class="toast hidden">
+    Message sent successfully!
+  </div>
+
+  <div class="contact-grid">
+    <!-- LEFT SIDE: FORM -->
+    <div class="contact-card">
+      <h2>Send a Message</h2>
+
+      <form id="contact-form" action="https://formspree.io/f/mjgpldbo" method="POST" class="contact-form">
+        <label>
+          Your Name
+          <input type="text" name="name" required>
+        </label>
+
+        <label>
+          Your Email
+          <input type="email" name="email" required>
+        </label>
+
+        <label>
+          Message
+          <textarea name="message" rows="5" required></textarea>
+        </label>
+
+        <button type="submit" class="btn" id="submit-btn">
+          <span class="btn-text">Send Message</span>
+          <span class="btn-loader hidden"></span>
+        </button>
+      </form>
+    </div>
+
+    <!-- RIGHT SIDE: INFO -->
+    <div class="contact-info">
+      <h2>Email</h2>
+      <p>📧 <strong>yourstoreemail@example.com</strong></p>
+
+      <h2>Socials</h2>
+      <ul class="social-list">
+        <li>📸 Instagram: @yourshophandle</li>
+        <li>🎵 TikTok: @yourshophandle</li>
+      </ul>
+
+      <h2>Business Hours</h2>
+      <p>
+        Monday–Friday: 10 AM – 6 PM<br>
+        Weekends: Responses may be slower
+      </p>
+
+      <h2>General Notes</h2>
+      <p>
+        If you’re reaching out about an order, please include your order number.
+        For pre-loved items, feel free to request additional photos or
+        measurements — I want you to feel confident in your purchase.
+      </p>
+    </div>
+  </div>
+  </section>
   </main>
 
   <footer class="site-footer">
     <a href="policies.html">Policies</a>
     <span>© Your Store</span>
   </footer>
+  <script src="scripts/contact.js"></script>
+  <script src="scripts/spotlight.js"></script>
+  <script src="scripts/transition.js"></script>
 </body>
 </html>

@@ -11,18 +11,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Load products
-  const products = await fetch("data/products.json")
+  const product = await fetch(`/api/products?id=${productId}`)
     .then(res => res.json())
     .catch(err => {
-      console.error("Error loading products.json", err);
-      return [];
+      console.error("Error loading product", err);
+      return null;
     });
 
-  const product = products.find(p => p.id === productId);
-
   if (!product) {
-    console.error("Product not found:", productId);
+    console.error("Product not found or load error:", productId);
     return;
   }
 

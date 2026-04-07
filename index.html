@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Your Store – New Arrivals</title>
+  <title>Marionette – New Arrivals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/layout.css">
   <link rel="stylesheet" href="styles/components.css">
 </head>
 <body class="page page-home">
+  <div id="transition-overlay"></div>
   <header class="site-header" id="main-navbar">
-    <div class="logo">Your Store</div>
+    <div class="logo">Marionette</div>
     <nav class="nav">
       <a href="index.html">Shop</a>
       <a href="about.html">About</a>
@@ -20,8 +24,10 @@
 
   <main class="main">
     <section class="hero">
-      <h1>New Arrivals</h1>
-      <p>Curated projects and products.</p>
+      <div class="hero-card">
+        <h1>New Arrivals</h1>
+        <p>Curated projects and products.</p>
+      </div>
     </section>
 
     <section class="filters">
@@ -51,5 +57,7 @@
 
   <script src="scripts/utils.js"></script>
   <script src="scripts/app.js"></script>
+  <script src="scripts/spotlight.js"></script>
+  <script src="scripts/transition.js"></script>
 </body>
 </html>

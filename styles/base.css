@@ -15,47 +15,93 @@ html {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--beige);
-  color: var(--text);
+  font-family: 'Libre Baskerville', serif;
+  background-color: var(--pale-stage);
+  color: var(--deep-plum);
   line-height: 1.6;
 }
 
 /* ---------- COLOR PALETTE ---------- */
 :root {
-  --beige: #F5F1E8;
-  --olive: #6E7F5F;
-  --forest: #3F4A3C;
-  --terracotta: #C97F62;
-  --text: #3A2F2A;
+  --deep-plum: #2b1b2f;
+  --velvet-red: #7b2430;
+  --dusty-rose: #c98a9b;
+  --pale-stage: #fdf5f7;
+  --warm-rope: #d9b27c;
+  --theater-purple: #5a3d5c;
   --white: #FFFFFF;
 }
 
 /* ---------- TYPOGRAPHY ---------- */
 h1, h2, h3, h4 {
   font-family: 'Playfair Display', serif;
-  color: var(--text);
+  color: var(--deep-plum);
   font-weight: 600;
+  letter-spacing: -0.03em;
+  text-shadow: 0 1px 2px rgba(43, 27, 47, 0.1);
 }
 
 p, span, a, li {
-  font-family: 'Inter', sans-serif;
-  color: var(--text);
+  font-family: 'Libre Baskerville', serif;
+  color: var(--deep-plum);
 }
 
 /* ---------- LINKS ---------- */
 a {
+  position: relative;
   text-decoration: none;
-  color: var(--forest);
+  color: var(--velvet-red);
+  transition: color 0.2s ease;
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(253,245,247,0.35) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: -1;
 }
 
 a:hover {
-  color: var(--terracotta);
+  color: var(--dusty-rose);
+}
+
+a:hover::after {
+  opacity: 1;
+}
+
+.spotlight-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 260px;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 234, 110, 0.28) 0%, rgba(255, 234, 110, 0.16) 16%, transparent 58%);
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+  mix-blend-mode: normal;
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+
+.reveal-on-scroll.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ---------- BUTTONS ---------- */
 .btn-primary {
-  background-color: var(--forest);
+  background-color: var(--velvet-red);
   color: var(--white);
   padding: 12px 20px;
   border: none;
@@ -66,7 +112,7 @@ a:hover {
 }
 
 .btn-primary:hover {
-  background-color: var(--olive);
+  background-color: var(--dusty-rose);
 }
 
 /* ---------- PAGE WRAPPER ---------- */
@@ -74,6 +120,9 @@ a:hover {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: radial-gradient(circle at top, var(--pale-stage) 0%, #f7f0f4 40%, #f3e7f0 100%);
+  color: #2b1b2f;
+  position: relative;
 }
 
 /* ---------- HEADER ---------- */
@@ -81,16 +130,22 @@ a:hover {
   width: 100%;
   padding: 20px 40px;
   background-color: var(--white);
-  border-bottom: 1px solid var(--olive);
+  border-bottom: 1px solid var(--dusty-rose);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-image:
+    linear-gradient(135deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 48%, rgba(255,255,255,0.16) 100%),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 4px 4px, 4px 4px;
+  background-blend-mode: overlay, normal, normal;
 }
 
 .logo {
   font-family: 'Playfair Display', serif;
   font-size: 1.6rem;
-  color: var(--forest);
+  color: var(--deep-plum);
 }
 
 .nav a {
@@ -107,10 +162,23 @@ a:hover {
   margin-top: auto;
   padding: 20px 40px;
   background-color: var(--white);
-  border-top: 1px solid var(--olive);
+  border-top: 1px solid var(--dusty-rose);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-image:
+    linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.14) 100%),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 5px 5px;
+  background-blend-mode: overlay, normal;
+}
+
+hr,
+.section-divider {
+  border: 0;
+  height: 2px;
+  background-image: repeating-linear-gradient(90deg, rgba(217,178,124,0.4), rgba(217,178,124,0.4) 6px, rgba(255,255,255,0.2) 6px, rgba(255,255,255,0.2) 10px);
+  margin: 2rem 0;
 }
 
 /* ---------- UTILITY CLASSES ---------- */
@@ -126,9 +194,9 @@ a:hover {
 
 /* Active filter button */
 .filter-btn.active {
-  background-color: #d8c7a1;   /* earthy highlight */
-  color: #3a2f1b;
-  border-color: #b8a078;
+  background-color: var(--warm-rope);
+  color: var(--deep-plum);
+  border-color: var(--dusty-rose);
   font-weight: 600;
   transform: scale(1.03);
   transition: 0.2s ease;
@@ -142,7 +210,7 @@ a:hover {
   padding: 10px 0;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  box-shadow: inset 0 -1px 0 #e6dccb; /* subtle bottom border */
+  box-shadow: inset 0 -1px 0 var(--dusty-rose); /* subtle bottom border */
 }
 
 .filter-scroll::-webkit-scrollbar {
@@ -153,3 +221,59 @@ a:hover {
   flex: 0 0 auto;
   scroll-snap-align: start;
 }
+
+/* GLOBAL PAGE BACKGROUND */
+.page {
+  background: linear-gradient(180deg, #f5f5ef 0%, #fafaf7 100%);
+}
+
+/* HEADINGS */
+h1, h2 {
+  color: #3f3f3f;
+  letter-spacing: -0.5px;
+}
+
+/* CARDS */
+.about-card,
+.policy-card {
+  background: var(--pale-stage);
+  padding: 2rem;
+  border-radius: 14px;
+  border: 1px solid var(--dusty-rose);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  margin-top: 1.5rem;
+}
+
+/* FOOTER */
+.footer-upgraded {
+  background: #2b1b2f;
+  padding: 1.5rem 0;
+  margin-top: 3rem;
+  border-top: 1px solid #7b2430;
+  color: #fdf5f7;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 900px;
+  margin: auto;
+  padding: 0 1rem;
+}
+
+.footer-left a {
+  margin-right: 1rem;
+  color: #fdf5f7;
+  font-weight: 600;
+}
+
+.footer-left a:hover {
+  text-decoration: underline;
+}
+
+.footer-tagline {
+  font-size: 0.9rem;
+  color: #c98a9b;
+}
+

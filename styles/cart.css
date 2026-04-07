@@ -4,13 +4,13 @@
   gap: 20px;
   margin-bottom: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--olive);
+  border-bottom: 1px solid var(--dusty-rose);
 }
 
 .cart-item img {
   width: 120px;
   border-radius: 6px;
-  border: 1px solid var(--olive);
+  border: 1px solid var(--dusty-rose);
 }
 
 .cart-item-info h3 {
@@ -29,7 +29,7 @@
 }
 
 .qty-controls button {
-  background-color: var(--forest);
+  background-color: var(--velvet-red);
   color: var(--white);
   border: none;
   padding: 4px 10px;
@@ -38,7 +38,7 @@
 }
 
 .qty-controls button:hover {
-  background-color: var(--olive);
+  background-color: var(--dusty-rose);
 }
 
 .success-container,
