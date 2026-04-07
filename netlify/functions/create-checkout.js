@@ -14,10 +14,11 @@ const products = [
 
 export const handler = async (event) => {
   try {
-    const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
     const { cart } = JSON.parse(event.body);
 
+    // 1. Build product line items
     const lineItems = cart.map(cartItem => {
       const product = products.find(p => p.id === cartItem.id);
 
@@ -38,6 +39,34 @@ export const handler = async (event) => {
       };
     });
 
+    // 2. Calculate subtotal (in cents)
+    const subtotal = lineItems.reduce((sum, item) => {
+      return sum + item.price_data.unit_amount * item.quantity;
+    }, 0);
+
+    // 3. Add platform fee (5%)
+    const feeAmount = Math.round(subtotal * 0.05);
+    lineItems.push({
+      price_data: {
+        currency: "usd",
+        product_data: { name: "Platform Fee" },
+        unit_amount: feeAmount,
+      },
+      quantity: 1,
+    });
+
+    // 4. Add tax (8.25%)
+    const taxAmount = Math.round(subtotal * 0.0825);
+    lineItems.push({
+      price_data: {
+        currency: "usd",
+        product_data: { name: "Sales Tax (8.25%)" },
+        unit_amount: taxAmount,
+      },
+      quantity: 1,
+    });
+
+    // 5. Create Stripe session
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
