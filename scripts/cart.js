@@ -103,6 +103,17 @@ function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
+document.getElementById("checkout-btn").addEventListener("click", async () => {
+  const items = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const response = await fetch("/.netlify/functions/create-checkout", {
+    method: "POST",
+    body: JSON.stringify({ items }),
+  });
+
+  const data = await response.json();
+  window.location.href = data.url;
+});
 
 /* ------------------------------
    CALCULATE TOTALS
