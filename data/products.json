@@ -4,8 +4,8 @@
     "name": "Sample Project",
     "price": 250.00,
     "stock": 5,
-    "image": ["images/products/sample-001.jpg"],
-    "category": "digital",
+    "image": "images/products/sample-001.jpg",
+    "category": "digital services",
     "description": "A placeholder item to test your store."
   }
 ]

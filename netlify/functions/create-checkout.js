@@ -26,7 +26,7 @@ export const handler = async (event) => {
             name: product.name,
             images: [product.image],
           },
-          unit_amount: product.price, // already in cents
+          unit_amount: Math.round(product.price * 100) // already in cents
         },
         quantity: cartItem.quantity,
       };
