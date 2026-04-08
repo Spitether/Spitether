@@ -3,7 +3,7 @@ import Stripe from "stripe";
 export default async function handler(req, res) {
   try {
     // Load JSON inside the function (Vercel requirement)
-    const products = (await import("../../data/products.json")).default;
+    const products = (await import("./data/products.json")).default;
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
