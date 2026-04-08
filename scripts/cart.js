@@ -1,53 +1,54 @@
-/* cart.js — handles cart display + totals */
-
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("cart.js loaded");
 
   const cartContainer = document.getElementById("cart-items");
 
   // Load cart from localStorage
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  // Load products
-  const products = await fetch("/api/products")
+  // Load products from your JSON file
+  const products = await fetch("./data/products.json")
     .then(res => res.json())
     .catch(err => {
-      console.error("Error loading products", err);
+      console.error("Error loading products.json", err);
       return [];
     });
 
-  // Render cart items
-  renderCart(cart, products, cartContainer);
+  // Merge cart + product data
+  const merged = storedCart
+    .map(item => {
+      const product = products.find(p => p.id === item.id);
+      if (!product) return null;
+      return { ...product, quantity: item.quantity };
+    })
+    .filter(Boolean);
 
-  // Calculate totals
-  updateTotals(cart, products);
+  renderCart(merged, cartContainer);
+  updateTotals(merged);
 });
 
 
 /* ------------------------------
    RENDER CART ITEMS
 --------------------------------*/
-function renderCart(cart, products, container) {
+function renderCart(items, container) {
   container.innerHTML = "";
 
-  if (cart.length === 0) {
+  if (items.length === 0) {
     container.innerHTML = "<p>Your cart is empty.</p>";
     return;
   }
 
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    if (!product) return;
-
+  items.forEach(item => {
     const div = document.createElement("div");
     div.className = "cart-item";
 
     div.innerHTML = `
-      <img src="${product.image}" alt="${product.name}">
+      <img src="${item.image}" alt="${item.name}">
       <div class="cart-item-info">
-        <h3>${product.name}</h3>
-        <p>Price: $${(product.price / 100).toFixed(2)}</p>
-        <p>Stock: ${product.stock}</p>
+        <h3>${item.name}</h3>
+        <p>Price: $${item.price.toFixed(2)}</p>
+        <p>Stock: ${item.stock}</p>
 
         <div class="qty-controls">
           <button class="qty-minus">-</button>
@@ -59,36 +60,27 @@ function renderCart(cart, products, container) {
       </div>
     `;
 
-    /* Quantity + button */
+    // Quantity +
     div.querySelector(".qty-plus").addEventListener("click", () => {
-      if (item.quantity < product.stock) {
-        item.quantity++;
-        saveCart(cart);
-        renderCart(cart, products, container);
-        updateTotals(cart, products);
+      if (item.quantity < item.stock) {
+        updateCartQuantity(item.id, item.quantity + 1);
       } else {
         alert("No more stock available.");
       }
     });
 
-    /* Quantity – button */
+    // Quantity –
     div.querySelector(".qty-minus").addEventListener("click", () => {
       if (item.quantity > 1) {
-        item.quantity--;
+        updateCartQuantity(item.id, item.quantity - 1);
       } else {
-        cart = cart.filter(c => c.id !== item.id);
+        removeFromCart(item.id);
       }
-      saveCart(cart);
-      renderCart(cart, products, container);
-      updateTotals(cart, products);
     });
 
-    /* Remove item */
+    // Remove
     div.querySelector(".remove-item").addEventListener("click", () => {
-      cart = cart.filter(c => c.id !== item.id);
-      saveCart(cart);
-      renderCart(cart, products, container);
-      updateTotals(cart, products);
+      removeFromCart(item.id);
     });
 
     container.appendChild(div);
@@ -97,16 +89,28 @@ function renderCart(cart, products, container) {
 
 
 /* ------------------------------
-   SAVE CART
+   CART STORAGE HELPERS
 --------------------------------*/
-function saveCart(cart) {
+function updateCartQuantity(id, qty) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const item = cart.find(c => c.id === id);
+  if (item) item.quantity = qty;
   localStorage.setItem("cart", JSON.stringify(cart));
+  location.reload();
 }
 
+function removeFromCart(id) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart = cart.filter(c => c.id !== id);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  location.reload();
+}
+
+
 /* ------------------------------
-   CALCULATE TOTALS
+   TOTALS
 --------------------------------*/
-function updateTotals(cart, products) {
+function updateTotals(items) {
   const subtotalEl = document.getElementById("summary-subtotal");
   const feesEl = document.getElementById("summary-fees");
   const taxEl = document.getElementById("summary-tax");
@@ -114,40 +118,19 @@ function updateTotals(cart, products) {
 
   let subtotal = 0;
 
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    if (product) {
-      subtotal += product.price * item.quantity;
-    }
+  items.forEach(item => {
+    subtotal += item.price * item.quantity;
   });
 
-  const FEES_RATE = 0.05;     // 5% platform fee
-  const TAX_RATE = 0.0825;    // 8.25% Houston tax
+  const FEES_RATE = 0.05;
+  const TAX_RATE = 0.0825;
 
-  const fees = Math.round(subtotal * FEES_RATE);
-  const tax = Math.round(subtotal * TAX_RATE);
+  const fees = subtotal * FEES_RATE;
+  const tax = subtotal * TAX_RATE;
   const total = subtotal + fees + tax;
 
-  subtotalEl.textContent = `$${(subtotal / 100).toFixed(2)}`;
-  feesEl.textContent = `$${(fees / 100).toFixed(2)}`;
-  taxEl.textContent = `$${(tax / 100).toFixed(2)}`;
-  totalEl.textContent = `$${(total / 100).toFixed(2)}`;
-}
-
-async function loadCart() {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  // Load full product data
-  const products = await fetch("./data/products.json")
-    .then(res => res.json());
-
-  const cartItems = cart.map(item => {
-    const product = products.find(p => p.id === item.id);
-    return {
-      ...product,
-      quantity: item.quantity
-    };
-  });
-
-  renderCart(cartItems);
+  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  feesEl.textContent = `$${fees.toFixed(2)}`;
+  taxEl.textContent = `$${tax.toFixed(2)}`;
+  totalEl.textContent = `$${total.toFixed(2)}`;
 }

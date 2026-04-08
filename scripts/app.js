@@ -1,136 +1,174 @@
-/* cart.js — handles cart display + totals */
+/* app.js — loads products + builds homepage grid */
 
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("cart.js loaded");
+  console.log("app.js loaded");
 
-  const cartContainer = document.getElementById("cart-items");
+  const grid = document.getElementById("product-grid");
 
-  // Load cart from localStorage
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  // Load products (correct path)
-  const products = await fetch("./data/products.json")
+  // Load products
+  const products = await fetch("/data/products.json")
     .then(res => res.json())
     .catch(err => {
-      console.error("Error loading products.json", err);
+      console.error("Error loading products", err);
       return [];
     });
 
-  // Render cart items
-  renderCart(cart, products, cartContainer);
-
-  // Calculate totals
-  updateTotals(cart, products);
-});
-
-
-/* ------------------------------
-   RENDER CART ITEMS
---------------------------------*/
-function renderCart(cart, products, container) {
-  container.innerHTML = "";
-
-  if (cart.length === 0) {
-    container.innerHTML = "<p>Your cart is empty.</p>";
-    return;
+  // Load categories (optional)
+  let categories = [];
+  try {
+    categories = await fetch("data/categories.json").then(res => res.json());
+  } catch (e) {
+    console.warn("No categories.json found");
   }
 
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    if (!product) return;
+  // Render category filters if available
+  if (categories.length > 0) {
+    renderCategoryFilters(categories, products);
+  }
 
-    const div = document.createElement("div");
-    div.className = "cart-item";
+  // Render search bar
+  renderSearchBar(products);
 
-    div.innerHTML = `
-      <img src="${product.image}" alt="${product.name}">
-      <div class="cart-item-info">
-        <h3>${product.name}</h3>
-        <p>Price: $${product.price.toFixed(2)}</p>
-        <p>Stock: ${product.stock}</p>
+  // Render product cards
+  renderProducts(products, grid);
 
-        <div class="qty-controls">
-          <button class="qty-minus">-</button>
-          <span class="qty-number">${item.quantity}</span>
-          <button class="qty-plus">+</button>
-        </div>
+  // Start the scroll and cursor effects
+  initSpotlight();
+  initScrollReveal();
+});
 
-        <button class="remove-item">Remove</button>
-      </div>
-    `;
+function buildPageUrl(file, query = "") {
+  let base = window.location.pathname;
 
-    /* Quantity + button */
-    div.querySelector(".qty-plus").addEventListener("click", () => {
-      if (item.quantity < product.stock) {
-        item.quantity++;
-        saveCart(cart);
-        renderCart(cart, products, container);
-        updateTotals(cart, products);
-      } else {
-        alert("No more stock available.");
-      }
-    });
+  if (base.endsWith("/")) {
+    return `${base}${file}${query}`;
+  }
 
-    /* Quantity – button */
-    div.querySelector(".qty-minus").addEventListener("click", () => {
-      if (item.quantity > 1) {
-        item.quantity--;
-      } else {
-        cart = cart.filter(c => c.id !== item.id);
-      }
-      saveCart(cart);
-      renderCart(cart, products, container);
-      updateTotals(cart, products);
-    });
+  if (base.endsWith(".html")) {
+    base = base.substring(0, base.lastIndexOf("/") + 1);
+    return `${base}${file}${query}`;
+  }
 
-    /* Remove item */
-    div.querySelector(".remove-item").addEventListener("click", () => {
-      cart = cart.filter(c => c.id !== item.id);
-      saveCart(cart);
-      renderCart(cart, products, container);
-      updateTotals(cart, products);
-    });
+  return `${base}/${file}${query}`;
+}
 
-    container.appendChild(div);
+
+/* ------------------------------
+   RENDER PRODUCT CARDS
+--------------------------------*/
+function renderProducts(products, container) {
+  container.innerHTML = ""; // clear grid
+
+  products.forEach(p => {
+    const card = document.createElement("a");
+    card.href = buildPageUrl("product.html", `?id=${p.id}`);
+    card.className = "product-card reveal-on-scroll";
+
+    card.innerHTML = `
+    <img src="${p.image}" alt="${p.name}">
+    <h3>${p.name}</h3>
+    <p>$${p.price.toFixed(2)}</p>
+    <span class="tag ${p.stock === 0 ? "sold-out" : ""}">
+    ${p.stock === 0 ? "Sold Out" : "In Stock"}
+  </span>
+`;
+
+    container.appendChild(card);
   });
 }
 
 
 /* ------------------------------
-   SAVE CART
+   CATEGORY FILTERS
 --------------------------------*/
-function saveCart(cart) {
-  localStorage.setItem("cart", JSON.stringify(cart));
+function renderCategoryFilters(categories, products) {
+  const filterContainer = document.getElementById("category-filters");
+  if (!filterContainer) return;
+
+  categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.textContent = cat.name;
+
+    btn.addEventListener("click", () => {
+      const filtered = products.filter(p => p.category === cat.id);
+      const grid = document.getElementById("product-grid");
+      renderProducts(filtered, grid);
+    });
+
+    filterContainer.appendChild(btn);
+  });
 }
 
 
 /* ------------------------------
-   CALCULATE TOTALS
+   SEARCH BAR
 --------------------------------*/
-function updateTotals(cart, products) {
-  const subtotalEl = document.getElementById("summary-subtotal");
-  const feesEl = document.getElementById("summary-fees");
-  const taxEl = document.getElementById("summary-tax");
-  const totalEl = document.getElementById("summary-total");
+function renderSearchBar(products) {
+  const searchContainer = document.getElementById("search-bar");
+  if (!searchContainer) return;
 
-  let subtotal = 0;
+  const input = document.createElement("input");
+  input.placeholder = "Search…";
 
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    if (product) {
-      subtotal += product.price * item.quantity;
-    }
+  input.addEventListener("input", () => {
+    const query = input.value.toLowerCase();
+    const filtered = products.filter(p =>
+      p.name.toLowerCase().includes(query) ||
+      p.description.toLowerCase().includes(query)
+    );
+    const grid = document.getElementById("product-grid");
+    renderProducts(filtered, grid);
   });
 
-  const FEES_RATE = 0.05;     // 5% platform fee
-  const TAX_RATE = 0.0825;    // 8.25% Houston tax
+  searchContainer.appendChild(input);
+}
 
-  const fees = subtotal * FEES_RATE;
-  const tax = subtotal * TAX_RATE;
-  const total = subtotal + fees + tax;
+function initSpotlight() {
+  const spotlight = document.createElement("div");
+  spotlight.className = "spotlight-overlay";
+  document.body.appendChild(spotlight);
 
-  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-  feesEl.textContent = `$${fees.toFixed(2)}`;
-  taxEl.textContent = `$${tax.toFixed(2)}`;
-  totalEl.textContent = `$${total.toFixed(2)}`;
+  let fadeTimeout;
+  const resetFade = () => {
+    clearTimeout(fadeTimeout);
+    fadeTimeout = setTimeout(() => {
+      spotlight.style.opacity = "0";
+    }, 1500);
+  };
+
+  document.addEventListener("mousemove", e => {
+    spotlight.style.left = `${e.clientX}px`;
+    spotlight.style.top = `${e.clientY}px`;
+    spotlight.style.opacity = "0.65";
+    spotlight.style.transform = `translate(-50%, -50%) scale(1)`;
+    resetFade();
+  });
+
+  document.addEventListener("mouseleave", () => {
+    spotlight.style.opacity = "0";
+  });
+
+  document.addEventListener("scroll", () => {
+    spotlight.style.opacity = "0.45";
+    resetFade();
+  }, { passive: true });
+}
+
+function initScrollReveal() {
+  const revealTargets = document.querySelectorAll("section, .product-card");
+  revealTargets.forEach(el => el.classList.add("reveal-on-scroll"));
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("reveal-visible");
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.18,
+    rootMargin: "0px 0px -80px 0px"
+  });
+
+  revealTargets.forEach(el => observer.observe(el));
 }
