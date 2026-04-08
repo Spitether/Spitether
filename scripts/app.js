@@ -1,174 +1,136 @@
-/* app.js — loads products + builds homepage grid */
+/* cart.js — handles cart display + totals */
 
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("app.js loaded");
+  console.log("cart.js loaded");
 
-  const grid = document.getElementById("product-grid");
+  const cartContainer = document.getElementById("cart-items");
 
-  // Load products
-  const products = await fetch("/data/products.json")
+  // Load cart from localStorage
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  // Load products (correct path)
+  const products = await fetch("./data/products.json")
     .then(res => res.json())
     .catch(err => {
-      console.error("Error loading products", err);
+      console.error("Error loading products.json", err);
       return [];
     });
 
-  // Load categories (optional)
-  let categories = [];
-  try {
-    categories = await fetch("data/categories.json").then(res => res.json());
-  } catch (e) {
-    console.warn("No categories.json found");
-  }
+  // Render cart items
+  renderCart(cart, products, cartContainer);
 
-  // Render category filters if available
-  if (categories.length > 0) {
-    renderCategoryFilters(categories, products);
-  }
-
-  // Render search bar
-  renderSearchBar(products);
-
-  // Render product cards
-  renderProducts(products, grid);
-
-  // Start the scroll and cursor effects
-  initSpotlight();
-  initScrollReveal();
+  // Calculate totals
+  updateTotals(cart, products);
 });
 
-function buildPageUrl(file, query = "") {
-  let base = window.location.pathname;
 
-  if (base.endsWith("/")) {
-    return `${base}${file}${query}`;
+/* ------------------------------
+   RENDER CART ITEMS
+--------------------------------*/
+function renderCart(cart, products, container) {
+  container.innerHTML = "";
+
+  if (cart.length === 0) {
+    container.innerHTML = "<p>Your cart is empty.</p>";
+    return;
   }
 
-  if (base.endsWith(".html")) {
-    base = base.substring(0, base.lastIndexOf("/") + 1);
-    return `${base}${file}${query}`;
-  }
+  cart.forEach(item => {
+    const product = products.find(p => p.id === item.id);
+    if (!product) return;
 
-  return `${base}/${file}${query}`;
-}
+    const div = document.createElement("div");
+    div.className = "cart-item";
 
+    div.innerHTML = `
+      <img src="${product.image}" alt="${product.name}">
+      <div class="cart-item-info">
+        <h3>${product.name}</h3>
+        <p>Price: $${product.price.toFixed(2)}</p>
+        <p>Stock: ${product.stock}</p>
 
-/* ------------------------------
-   RENDER PRODUCT CARDS
---------------------------------*/
-function renderProducts(products, container) {
-  container.innerHTML = ""; // clear grid
+        <div class="qty-controls">
+          <button class="qty-minus">-</button>
+          <span class="qty-number">${item.quantity}</span>
+          <button class="qty-plus">+</button>
+        </div>
 
-  products.forEach(p => {
-    const card = document.createElement("a");
-    card.href = buildPageUrl("product.html", `?id=${p.id}`);
-    card.className = "product-card reveal-on-scroll";
+        <button class="remove-item">Remove</button>
+      </div>
+    `;
 
-    card.innerHTML = `
-    <img src="${p.image}" alt="${p.name}">
-    <h3>${p.name}</h3>
-    <p>$${p.price.toFixed(2)}</p>
-    <span class="tag ${p.stock === 0 ? "sold-out" : ""}">
-    ${p.stock === 0 ? "Sold Out" : "In Stock"}
-  </span>
-`;
-
-    container.appendChild(card);
-  });
-}
-
-
-/* ------------------------------
-   CATEGORY FILTERS
---------------------------------*/
-function renderCategoryFilters(categories, products) {
-  const filterContainer = document.getElementById("category-filters");
-  if (!filterContainer) return;
-
-  categories.forEach(cat => {
-    const btn = document.createElement("button");
-    btn.textContent = cat.name;
-
-    btn.addEventListener("click", () => {
-      const filtered = products.filter(p => p.category === cat.id);
-      const grid = document.getElementById("product-grid");
-      renderProducts(filtered, grid);
-    });
-
-    filterContainer.appendChild(btn);
-  });
-}
-
-
-/* ------------------------------
-   SEARCH BAR
---------------------------------*/
-function renderSearchBar(products) {
-  const searchContainer = document.getElementById("search-bar");
-  if (!searchContainer) return;
-
-  const input = document.createElement("input");
-  input.placeholder = "Search…";
-
-  input.addEventListener("input", () => {
-    const query = input.value.toLowerCase();
-    const filtered = products.filter(p =>
-      p.name.toLowerCase().includes(query) ||
-      p.description.toLowerCase().includes(query)
-    );
-    const grid = document.getElementById("product-grid");
-    renderProducts(filtered, grid);
-  });
-
-  searchContainer.appendChild(input);
-}
-
-function initSpotlight() {
-  const spotlight = document.createElement("div");
-  spotlight.className = "spotlight-overlay";
-  document.body.appendChild(spotlight);
-
-  let fadeTimeout;
-  const resetFade = () => {
-    clearTimeout(fadeTimeout);
-    fadeTimeout = setTimeout(() => {
-      spotlight.style.opacity = "0";
-    }, 1500);
-  };
-
-  document.addEventListener("mousemove", e => {
-    spotlight.style.left = `${e.clientX}px`;
-    spotlight.style.top = `${e.clientY}px`;
-    spotlight.style.opacity = "0.65";
-    spotlight.style.transform = `translate(-50%, -50%) scale(1)`;
-    resetFade();
-  });
-
-  document.addEventListener("mouseleave", () => {
-    spotlight.style.opacity = "0";
-  });
-
-  document.addEventListener("scroll", () => {
-    spotlight.style.opacity = "0.45";
-    resetFade();
-  }, { passive: true });
-}
-
-function initScrollReveal() {
-  const revealTargets = document.querySelectorAll("section, .product-card");
-  revealTargets.forEach(el => el.classList.add("reveal-on-scroll"));
-
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("reveal-visible");
-        obs.unobserve(entry.target);
+    /* Quantity + button */
+    div.querySelector(".qty-plus").addEventListener("click", () => {
+      if (item.quantity < product.stock) {
+        item.quantity++;
+        saveCart(cart);
+        renderCart(cart, products, container);
+        updateTotals(cart, products);
+      } else {
+        alert("No more stock available.");
       }
     });
-  }, {
-    threshold: 0.18,
-    rootMargin: "0px 0px -80px 0px"
+
+    /* Quantity – button */
+    div.querySelector(".qty-minus").addEventListener("click", () => {
+      if (item.quantity > 1) {
+        item.quantity--;
+      } else {
+        cart = cart.filter(c => c.id !== item.id);
+      }
+      saveCart(cart);
+      renderCart(cart, products, container);
+      updateTotals(cart, products);
+    });
+
+    /* Remove item */
+    div.querySelector(".remove-item").addEventListener("click", () => {
+      cart = cart.filter(c => c.id !== item.id);
+      saveCart(cart);
+      renderCart(cart, products, container);
+      updateTotals(cart, products);
+    });
+
+    container.appendChild(div);
+  });
+}
+
+
+/* ------------------------------
+   SAVE CART
+--------------------------------*/
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+
+/* ------------------------------
+   CALCULATE TOTALS
+--------------------------------*/
+function updateTotals(cart, products) {
+  const subtotalEl = document.getElementById("summary-subtotal");
+  const feesEl = document.getElementById("summary-fees");
+  const taxEl = document.getElementById("summary-tax");
+  const totalEl = document.getElementById("summary-total");
+
+  let subtotal = 0;
+
+  cart.forEach(item => {
+    const product = products.find(p => p.id === item.id);
+    if (product) {
+      subtotal += product.price * item.quantity;
+    }
   });
 
-  revealTargets.forEach(el => observer.observe(el));
+  const FEES_RATE = 0.05;     // 5% platform fee
+  const TAX_RATE = 0.0825;    // 8.25% Houston tax
+
+  const fees = subtotal * FEES_RATE;
+  const tax = subtotal * TAX_RATE;
+  const total = subtotal + fees + tax;
+
+  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  feesEl.textContent = `$${fees.toFixed(2)}`;
+  taxEl.textContent = `$${tax.toFixed(2)}`;
+  totalEl.textContent = `$${total.toFixed(2)}`;
 }
