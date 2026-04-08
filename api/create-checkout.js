@@ -61,8 +61,8 @@ export default async function handler(req, res) {
       mode: "payment",
       payment_method_types: ["card"],
       line_items: lineItems,
-      success_url: "https://shop-spitether.netlify.app/success.html",
-      cancel_url: "https://shop-spitether.netlify.app/cancel.html",
+      success_url: "https://spitether.vercel.app/success.html",
+      cancel_url: "https://spitether.vercel.app/cancel.html",
     });
 
     res.status(200).json({ url: session.url });
