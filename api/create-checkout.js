@@ -1,12 +1,15 @@
 import Stripe from "stripe";
+import fs from "fs";
+import path from "path";
 
 export default async function handler(req, res) {
   try {
-    // Load JSON inside the function (Vercel requirement)
-    const products = (await import("./apiproducts.json")).default;
+    // Resolve the JSON file inside the serverless bundle
+    const filePath = path.join(process.cwd(), "api", "apiproducts.json");
+    const fileData = fs.readFileSync(filePath, "utf8");
+    const products = JSON.parse(fileData);
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
     const { cart } = req.body;
 
     const lineItems = cart.map(cartItem => {
