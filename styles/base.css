@@ -1,7 +1,7 @@
 /* ================================
-   BASE.CSS — EARTHY THEME
-   Global resets, colors, fonts
-   ================================ */
+   BASE.CSS — MARIONETTE THEATER THEME
+   Global resets, colors, fonts, stage styling
+================================ */
 
 /* ---------- RESET ---------- */
 * {
@@ -14,65 +14,148 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  font-family: 'Libre Baskerville', serif;
-  background-color: var(--pale-stage);
-  color: var(--deep-plum);
-  line-height: 1.6;
-}
-
-/* ---------- COLOR PALETTE ---------- */
+/* ---------- GLOBAL COLORS ---------- */
 :root {
   --deep-plum: #2b1b2f;
   --velvet-red: #7b2430;
+  --velvet-dark: #3d0f17;
   --dusty-rose: #c98a9b;
   --pale-stage: #fdf5f7;
   --warm-rope: #d9b27c;
+  --gold-dark: #b38a5e;
   --theater-purple: #5a3d5c;
   --white: #FFFFFF;
+
+  /* Stage lighting */
+  --spotlight-yellow: rgba(255, 234, 110, 0.28);
+  --spotlight-soft: rgba(255, 234, 110, 0.16);
+
+  /* Shadows */
+  --stage-shadow: rgba(0,0,0,0.35);
 }
 
-/* ---------- TYPOGRAPHY ---------- */
+/* -----------------------------------
+   GLOBAL PAGE BACKGROUND — STRONGER STAGE LOOK
+----------------------------------- */
+body {
+  font-family: 'Libre Baskerville', serif;
+  background: radial-gradient(circle at center, #1a0a0d 0%, #12070a 55%, #0a0406 100%);
+  color: var(--pale-stage);
+  line-height: 1.6;
+}
+
+/* -----------------------------------
+   HEADINGS — MORE CONTRAST + THEATRICAL GLOW
+----------------------------------- */
 h1, h2, h3, h4 {
   font-family: 'Playfair Display', serif;
-  color: var(--deep-plum);
+  color: #fdf5f7;
   font-weight: 600;
   letter-spacing: -0.03em;
-  text-shadow: 0 1px 2px rgba(43, 27, 47, 0.1);
+  text-shadow:
+    0 2px 6px rgba(0,0,0,0.55),
+    0 0 18px rgba(123,36,48,0.35); /* velvet glow */
 }
 
-p, span, a, li {
-  font-family: 'Libre Baskerville', serif;
-  color: var(--deep-plum);
+/* -----------------------------------
+   HEADER — CURTAIN TEXTURE + GOLD ROPE + HIGH CONTRAST
+----------------------------------- */
+.site-header {
+  width: 100%;
+  padding: 22px 40px;
+  background: linear-gradient(180deg, #3d0f17 0%, #2b0f14 100%);
+  border-bottom: 4px solid var(--warm-rope);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Curtain folds */
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.25) 0px,
+      rgba(0,0,0,0.25) 4px,
+      transparent 4px,
+      transparent 14px
+    );
+  box-shadow: 0 8px 22px rgba(0,0,0,0.45);
 }
 
-/* ---------- LINKS ---------- */
-a {
-  position: relative;
-  text-decoration: none;
-  color: var(--velvet-red);
-  transition: color 0.2s ease;
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.9rem;
+  color: #fdf5f7;
+  text-shadow: 0 3px 8px rgba(0,0,0,0.6);
 }
 
-a::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(253,245,247,0.35) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-  z-index: -1;
+/* NAV LINKS — GOLD HOVER + BETTER READABILITY */
+.nav a {
+  margin-left: 20px;
+  font-size: 1rem;
+  color: #fdf5f7;
+  transition: 0.2s ease;
+  padding: 6px 10px;
+  border-radius: 6px;
 }
 
-a:hover {
-  color: var(--dusty-rose);
+.nav a:hover {
+  background: rgba(217,178,124,0.25);
+  color: var(--warm-rope);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
 
-a:hover::after {
-  opacity: 1;
+/* -----------------------------------
+   FOOTER — DARKER, RICHER, MORE THEATRICAL
+----------------------------------- */
+.site-footer {
+  padding: 24px 40px;
+  background: linear-gradient(180deg, #2b0f14 0%, #1a0a0d 100%);
+  border-top: 4px solid var(--warm-rope);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Curtain folds */
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.25) 0px,
+      rgba(0,0,0,0.25) 4px,
+      transparent 4px,
+      transparent 14px
+    );
+  box-shadow: 0 -8px 22px rgba(0,0,0,0.45);
 }
 
+.site-footer p,
+.site-footer a {
+  color: #fdf5f7;
+  font-size: 0.95rem;
+}
+
+.site-footer a:hover {
+  color: var(--warm-rope);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+/* -----------------------------------
+   SECTION DIVIDERS — GOLD ROPE
+----------------------------------- */
+hr,
+.section-divider {
+  border: 0;
+  height: 4px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(217,178,124,0.8),
+    rgba(217,178,124,0.8) 8px,
+    rgba(255,255,255,0.15) 8px,
+    rgba(255,255,255,0.15) 14px
+  );
+  margin: 2.5rem 0;
+}
+
+/* ---------- SPOTLIGHT CURSOR ---------- */
 .spotlight-overlay {
   position: fixed;
   top: 0;
@@ -82,12 +165,13 @@ a:hover::after {
   pointer-events: none;
   z-index: 99999;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(255, 234, 110, 0.28) 0%, rgba(255, 234, 110, 0.16) 16%, transparent 58%);
+  background: radial-gradient(circle, var(--spotlight-yellow) 0%, var(--spotlight-soft) 16%, transparent 58%);
   opacity: 0;
   transition: opacity 0.2s ease, transform 0.15s ease;
-  mix-blend-mode: normal;
+  mix-blend-mode: screen;
 }
 
+/* ---------- SCROLL REVEAL ---------- */
 .reveal-on-scroll {
   opacity: 0;
   transform: translateY(20px);
@@ -101,18 +185,21 @@ a:hover::after {
 
 /* ---------- BUTTONS ---------- */
 .btn-primary {
-  background-color: var(--velvet-red);
+  background: linear-gradient(180deg, var(--velvet-red), var(--velvet-dark));
   color: var(--white);
   padding: 12px 20px;
-  border: none;
-  border-radius: 6px;
+  border: 2px solid var(--gold-dark);
+  border-radius: 10px;
   font-size: 1rem;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: 0.25s ease;
+  font-family: 'Playfair Display', serif;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
 }
 
 .btn-primary:hover {
-  background-color: var(--dusty-rose);
+  background: linear-gradient(180deg, #8c2a3a, #5a1622);
+  transform: translateY(-3px);
 }
 
 /* ---------- PAGE WRAPPER ---------- */
@@ -120,68 +207,76 @@ a:hover::after {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: radial-gradient(circle at top, var(--pale-stage) 0%, #f7f0f4 40%, #f3e7f0 100%);
-  color: #2b1b2f;
+  background: radial-gradient(circle at top, #3d0f17 0%, #2b0f14 40%, #1a0a0d 100%);
+  color: var(--pale-stage);
   position: relative;
+  padding-bottom: 4rem;
 }
 
-/* ---------- HEADER ---------- */
+/* ---------- HEADER (CURTAIN TEXTURE) ---------- */
 .site-header {
   width: 100%;
   padding: 20px 40px;
-  background-color: var(--white);
-  border-bottom: 1px solid var(--dusty-rose);
+  background: linear-gradient(180deg, #3d0f17, #2b0f14);
+  border-bottom: 3px solid var(--velvet-red);
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  /* Subtle curtain folds */
   background-image:
-    linear-gradient(135deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 48%, rgba(255,255,255,0.16) 100%),
-    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(0,0,0,0.02) 1px, transparent 1px);
-  background-size: 100% 100%, 4px 4px, 4px 4px;
-  background-blend-mode: overlay, normal, normal;
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 3px, transparent 3px, transparent 12px);
 }
 
 .logo {
   font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
-  color: var(--deep-plum);
+  font-size: 1.8rem;
+  color: var(--pale-stage);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
+/* NAV */
 .nav a {
   margin-left: 20px;
   font-size: 1rem;
+  color: var(--pale-stage);
+  transition: 0.2s ease;
 }
 
 .nav a:hover {
-  color: var(--terracotta);
+  color: var(--warm-rope);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
-/* ---------- FOOTER ---------- */
+/* ---------- FOOTER (CURTAIN BASE) ---------- */
 .site-footer {
   margin-top: auto;
   padding: 20px 40px;
-  background-color: var(--white);
-  border-top: 1px solid var(--dusty-rose);
+  background: linear-gradient(180deg, #2b0f14, #1a0a0d);
+  border-top: 3px solid var(--velvet-red);
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   background-image:
-    linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.14) 100%),
-    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-  background-size: 100% 100%, 5px 5px;
-  background-blend-mode: overlay, normal;
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.2) 0px, rgba(0,0,0,0.2) 3px, transparent 3px, transparent 12px);
 }
 
 hr,
 .section-divider {
   border: 0;
-  height: 2px;
-  background-image: repeating-linear-gradient(90deg, rgba(217,178,124,0.4), rgba(217,178,124,0.4) 6px, rgba(255,255,255,0.2) 6px, rgba(255,255,255,0.2) 10px);
+  height: 3px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(217,178,124,0.6),
+    rgba(217,178,124,0.6) 6px,
+    rgba(255,255,255,0.15) 6px,
+    rgba(255,255,255,0.15) 10px
+  );
   margin: 2rem 0;
 }
 
-/* ---------- UTILITY CLASSES ---------- */
+/* ---------- UTILITY ---------- */
 .content-narrow {
   max-width: 700px;
   margin: 40px auto;
@@ -192,17 +287,17 @@ hr,
   display: none;
 }
 
-/* Active filter button */
+/* ---------- FILTER BUTTON ACTIVE ---------- */
 .filter-btn.active {
   background-color: var(--warm-rope);
   color: var(--deep-plum);
   border-color: var(--dusty-rose);
   font-weight: 600;
-  transform: scale(1.03);
+  transform: scale(1.05);
   transition: 0.2s ease;
 }
 
-/* Horizontal scroll for filters */
+/* ---------- HORIZONTAL FILTER SCROLL ---------- */
 .filter-scroll {
   display: flex;
   gap: 10px;
@@ -210,11 +305,11 @@ hr,
   padding: 10px 0;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  box-shadow: inset 0 -1px 0 var(--dusty-rose); /* subtle bottom border */
+  box-shadow: inset 0 -1px 0 var(--dusty-rose);
 }
 
 .filter-scroll::-webkit-scrollbar {
-  display: none; /* hide scrollbar on mobile */
+  display: none;
 }
 
 .filter-btn {
@@ -222,58 +317,91 @@ hr,
   scroll-snap-align: start;
 }
 
-/* GLOBAL PAGE BACKGROUND */
-.page {
-  background: linear-gradient(180deg, #f5f5ef 0%, #fafaf7 100%);
+/* ============================================================
+   OVERRIDE + UPGRADE HEADER & FOOTER TO TRUE MARIONETTE THEME
+   (Place at the VERY BOTTOM of base.css)
+============================================================ */
+
+/* ---------- HEADER: Velvet Curtain + Gold Rope ---------- */
+.site-header {
+  width: 100% !important;
+  padding: 22px 40px !important;
+  background: linear-gradient(180deg, #3d0f17 0%, #2b0f14 100%) !important;
+  border-bottom: 4px solid var(--warm-rope) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  /* Curtain folds */
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.25) 0px,
+      rgba(0,0,0,0.25) 4px,
+      transparent 4px,
+      transparent 14px
+    ) !important;
+
+  box-shadow: 0 8px 22px rgba(0,0,0,0.55) !important;
 }
 
-/* HEADINGS */
-h1, h2 {
-  color: #3f3f3f;
-  letter-spacing: -0.5px;
+/* Header text */
+.site-header .logo,
+.site-header a {
+  color: #fdf5f7 !important;
+  text-shadow: 0 3px 8px rgba(0,0,0,0.6) !important;
 }
 
-/* CARDS */
-.about-card,
-.policy-card {
-  background: var(--pale-stage);
-  padding: 2rem;
-  border-radius: 14px;
-  border: 1px solid var(--dusty-rose);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-  margin-top: 1.5rem;
+.site-header a:hover {
+  color: var(--warm-rope) !important;
+  background: rgba(217,178,124,0.25) !important;
+  padding: 6px 10px !important;
+  border-radius: 6px !important;
 }
 
-/* FOOTER */
-.footer-upgraded {
-  background: #2b1b2f;
-  padding: 1.5rem 0;
-  margin-top: 3rem;
-  border-top: 1px solid #7b2430;
-  color: #fdf5f7;
+/* ---------- FOOTER: Dark Stage Base + Gold Rope ---------- */
+.site-footer {
+  padding: 24px 40px !important;
+  background: linear-gradient(180deg, #2b0f14 0%, #1a0a0d 100%) !important;
+  border-top: 4px solid var(--warm-rope) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  /* Curtain folds */
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.25) 0px,
+      rgba(0,0,0,0.25) 4px,
+      transparent 4px,
+      transparent 14px
+    ) !important;
+
+  box-shadow: 0 -8px 22px rgba(0,0,0,0.55) !important;
 }
 
-.footer-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 900px;
-  margin: auto;
-  padding: 0 1rem;
+.site-footer p,
+.site-footer a {
+  color: #fdf5f7 !important;
+  font-size: 0.95rem !important;
 }
 
-.footer-left a {
-  margin-right: 1rem;
-  color: #fdf5f7;
-  font-weight: 600;
+.site-footer a:hover {
+  color: var(--warm-rope) !important;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5) !important;
 }
 
-.footer-left a:hover {
-  text-decoration: underline;
+/* ---------- HEADINGS: Stronger Contrast + Velvet Glow ---------- */
+h1, h2, h3, h4 {
+  color: #fdf5f7 !important;
+  text-shadow:
+    0 2px 6px rgba(0,0,0,0.55),
+    0 0 18px rgba(123,36,48,0.35) !important;
 }
 
-.footer-tagline {
-  font-size: 0.9rem;
-  color: #c98a9b;
+/* ---------- PAGE BACKGROUND: Darker Velvet Stage ---------- */
+body {
+  background: radial-gradient(circle at center, #1a0a0d 0%, #12070a 55%, #0a0406 100%) !important;
+  color: #fdf5f7 !important;
 }
-

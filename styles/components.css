@@ -433,3 +433,278 @@
     opacity: 1;
   }
 }
+
+/* ================================
+   COMPONENTS.CSS — MARIONETTE + EARTHY HYBRID
+   Cards, buttons, tags, filters
+================================ */
+
+/* -----------------------------------
+   GLOBAL VARIABLES (ADD THESE)
+----------------------------------- */
+:root {
+  --velvet-red: #7a1f2f;
+  --velvet-dark: #3d0f17;
+  --velvet-deep: #2b0f14;
+  --gold-rope: #d9b27c;
+  --gold-dark: #b38a5e;
+  --stage-shadow: rgba(0,0,0,0.35);
+  --stage-bg: radial-gradient(circle at center, #2b0f14 0%, #1a0a0d 60%, #0d0507 100%);
+  --earthy-green: #b8c4a6;
+  --earthy-green-dark: #a3b18a;
+  --white: #ffffff;
+  --dusty-rose: #e2c7d4;
+  --olive: #8a8f6a;
+}
+
+/* -----------------------------------
+   PRODUCT CARD — THEATRICAL FRAME
+----------------------------------- */
+.product-card {
+  background-color: #fdf8f5;
+  border: 3px solid var(--velvet-dark);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  transition: 0.25s ease;
+  display: block;
+  box-shadow: 0 12px 28px var(--stage-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Spotlight hover */
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+}
+
+.product-card:hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.18), transparent 70%);
+  pointer-events: none;
+}
+
+/* Image */
+.product-card img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+
+/* Title */
+.product-card h3 {
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+  font-family: "Playfair Display", serif;
+  color: var(--velvet-dark);
+}
+
+/* Price */
+.product-card p {
+  font-size: 1rem;
+  color: var(--velvet-red);
+  font-weight: 600;
+}
+
+/* -----------------------------------
+   TAGS — MARIONETTE STYLE
+----------------------------------- */
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-top: 8px;
+  background: #f1e3e3;
+  color: var(--velvet-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tag.sold-out {
+  background-color: var(--velvet-red);
+  color: var(--white);
+}
+
+/* -----------------------------------
+   FILTERS — ROPE DIVIDER + GOLD ACCENTS
+----------------------------------- */
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  align-items: center;
+  position: relative;
+}
+
+/* Rope divider */
+.filters::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--gold-rope) 0px,
+    var(--gold-rope) 6px,
+    var(--gold-dark) 6px,
+    var(--gold-dark) 12px
+  );
+  border-radius: 6px;
+}
+
+#category-filters button {
+  background-color: var(--velvet-dark);
+  border: 2px solid var(--gold-dark);
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 10px;
+  color: var(--white);
+  font-family: "Playfair Display", serif;
+  transition: 0.2s ease;
+}
+
+#category-filters button:hover {
+  background-color: var(--velvet-red);
+  transform: translateY(-2px);
+}
+
+#category-filters .active {
+  background-color: var(--velvet-red);
+  border-color: var(--gold-rope);
+}
+
+/* -----------------------------------
+   SEARCH BAR — VELVET FRAME
+----------------------------------- */
+#search-bar input,
+#search-input {
+  padding: 10px 16px;
+  border: 2px solid var(--gold-dark);
+  border-radius: 14px;
+  width: 220px;
+  background: #fdf8f5;
+  color: var(--velvet-dark);
+  font-family: "Crimson Text", serif;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+
+#search-bar input::placeholder,
+#search-input::placeholder {
+  color: var(--velvet-red);
+  opacity: 0.7;
+}
+
+/* -----------------------------------
+   BUTTONS — EARTHY + THEATRICAL
+----------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px 20px;
+  background-color: var(--earthy-green);
+  color: #3a2f1b;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.25s ease;
+  border: 2px solid var(--velvet-dark);
+  font-family: "Playfair Display", serif;
+}
+
+.btn:hover {
+  background-color: var(--earthy-green-dark);
+  transform: translateY(-2px);
+}
+
+/* -----------------------------------
+   CONTACT FORM — EARTHY + GOLD
+----------------------------------- */
+.contact-form label {
+  font-weight: 600;
+  color: #4a4a4a;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #d8d8d8;
+  background: #fafafa;
+  transition: all 0.25s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--earthy-green);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(184, 196, 166, 0.25);
+}
+
+/* -----------------------------------
+   ABOUT / POLICY CARDS — PUPPET STRINGS
+----------------------------------- */
+.about-card,
+.policy-card {
+  background: #fdf5f7;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 2px solid var(--dusty-rose);
+  box-shadow: 0 10px 24px rgba(43, 27, 47, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Puppet strings */
+.about-card::before,
+.policy-card::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 20%;
+  width: 2px;
+  height: 80px;
+  background: linear-gradient(to bottom, var(--gold-rope), transparent);
+}
+
+.about-card::after,
+.policy-card::after {
+  content: "";
+  position: absolute;
+  top: 35px;
+  left: calc(20% - 6px);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gold-rope);
+}
+
+/* -----------------------------------
+   TOAST
+----------------------------------- */
+.toast {
+  background: var(--earthy-green);
+  color: white;
+  padding: 0.9rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* -----------------------------------
+   NAV ACTIVE STATE
+----------------------------------- */
+.nav .active {
+  background: var(--earthy-green);
+  color: white;
+}
