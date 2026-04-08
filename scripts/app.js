@@ -1,17 +1,16 @@
-/* app.js — loads products + builds homepage grid */
-
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("app.js loaded");
 
   const grid = document.getElementById("product-grid");
 
   // Load products
-  const products = await fetch("/data/products.json")
-    .then(res => res.json())
-    .catch(err => {
-      console.error("Error loading products", err);
-      return [];
-    });
+  let products = [];
+  try {
+    products = await fetch("./data/products.json").then(res => res.json());
+  } catch (err) {
+    console.error("Error loading products", err);
+    products = [];
+  }
 
   // Load categories (optional)
   let categories = [];
