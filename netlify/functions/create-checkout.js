@@ -1,16 +1,9 @@
 import Stripe from "stripe";
+import fs from "fs";
+import path from "path";
 
-const products = [
-  {
-    id: "sample-001",
-    name: "Earthy Sample Project",
-    price: 2500,
-    stock: 5,
-    image: "images/products/sample-001.jpg",
-    category: "digital",
-    description: "A placeholder item to test your store."
-  }
-];
+const productsPath = path.resolve("data/products.json");
+const products = JSON.parse(fs.readFileSync(productsPath, "utf8"));
 
 export const handler = async (event) => {
   try {
