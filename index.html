@@ -31,8 +31,19 @@
     </section>
 
     <section class="filters">
-      <div id="category-filters" class="filter-scroll"></div>
-      <div id="search-bar"></div>
+      <div id="category-filters" class="category-buttons">
+        <button class="filter-btn active" data-category="all">All</button>
+        <button class="filter-btn" data-category="Digital Projects">Digital Projects</button>
+        <button class="filter-btn" data-category="Fashion">Fashion</button>
+        <button class="filter-btn" data-category="Services">Services</button>
+      </div>
+
+    <input 
+      id="search-input" 
+      type="text" 
+      placeholder="Search products..."
+      class="search-bar"
+  >
     </section>
 
     <section class="product-grid" id="product-grid">

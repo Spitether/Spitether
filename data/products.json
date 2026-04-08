@@ -5,7 +5,19 @@
     "price": 250.00,
     "stock": 5,
     "image": "images/products/sample-001.jpg",
-    "category": "digital services",
-    "description": "A placeholder item to test your store."
+    "category": "Digital Projects",
+    "description": "A placeholder item to test your store.",
+    "sale": true,
+    "compareAt": 300
+  },
+  {
+    "id": "sample-002",
+    "name": "Sample Project 2",
+    "price": 30.00,
+    "stock": 5,
+    "image": "images/products/sample-002.jpg",
+    "category": "Digital Projects",
+    "description": "A placeholder item to test your store.",
+    "sale": false
   }
 ]

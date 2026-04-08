@@ -3,15 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <title>Product – Your Store</title>
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <!-- Your existing styles -->
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/layout.css">
   <link rel="stylesheet" href="styles/components.css">
+
+  <!-- Upgraded product page styles -->
   <link rel="stylesheet" href="styles/product.css">
 </head>
+
 <body class="page page-product">
+
+  <!-- HEADER -->
   <header class="site-header">
     <div class="logo"><a href="index.html">Your Store</a></div>
     <nav class="nav">
@@ -22,38 +31,78 @@
     </nav>
   </header>
 
+  <!-- MAIN -->
   <main class="main product-main">
-    <section class="product-detail" id="product-detail">
-      <div class="product-image-wrap">
-        <img id="product-image" alt="">
-        <div class="thumbnail-row" id="thumbnail-row"></div>
+
+    <section class="product-detail">
+
+      <!-- LEFT: IMAGE GALLERY -->
+      <div class="product-gallery">
+        <button class="gallery-arrow left">‹</button>
+
+        <div class="gallery-track" id="gallery-track">
+          <!-- JS injects images -->
+        </div>
+
+        <button class="gallery-arrow right">›</button>
       </div>
-      <div class="product-info">
-        <h1 id="product-title"></h1>
+
+      <!-- RIGHT: INFO CARD -->
+      <div class="product-info-card">
+
+        <div class="product-header">
+          <h1 id="product-title"></h1>
+          <span id="product-badge" class="badge"></span>
+        </div>
+
+        <div id="product-tags" class="product-tags"></div>
+
         <p id="product-price" class="product-price"></p>
         <p id="product-stock" class="product-stock"></p>
         <p id="product-description" class="product-description"></p>
 
         <button id="add-to-cart" class="btn-primary">Add to cart</button>
+        <div class="share-box">
+          <button class="share-btn" data-type="copy">Copy Link</button>
+          <button class="share-btn" data-type="twitter">Twitter</button>
+          <button class="share-btn" data-type="instagram">Instagram</button>
+        </div>
       </div>
+
     </section>
+
+    <!-- RECOMMENDED -->
+    <section class="recommended">
+      <h2>People also bought</h2>
+      <div id="recommended-grid" class="recommended-grid"></div>
+    </section>
+
+    <section class="recently-viewed">
+      <h2>Recently viewed</h2>
+      <div id="recent-grid" class="recommended-grid"></div>
+    </section>
+
   </main>
+
+  <!-- MOBILE CART BAR -->
   <div class="mobile-cart-bar" id="mobile-cart-bar">
-  <div class="mobile-cart-info">
-    <span id="mobile-cart-title"></span>
-    <span id="mobile-cart-price"></span>
+    <div class="mobile-cart-info">
+      <span id="mobile-cart-title"></span>
+      <span id="mobile-cart-price"></span>
+    </div>
+    <button id="mobile-add-to-cart">Add to cart</button>
   </div>
-  <button id="mobile-add-to-cart">Add to cart</button>
-</div>
 
-
+  <!-- FOOTER -->
   <footer class="site-footer">
     <a href="policies.html">Policies</a>
     <span>© Your Store</span>
   </footer>
 
+  <!-- SCRIPTS -->
   <script src="scripts/utils.js"></script>
   <script src="scripts/product.js"></script>
   <script src="scripts/spotlight.js"></script>
+
 </body>
 </html>

@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("app.js loaded");
 
   const grid = document.getElementById("product-grid");
+  const searchInput = document.getElementById("search-input");
+  const filterButtons = document.querySelectorAll(".filter-btn");
 
   // Load products
   let products = [];
@@ -12,30 +14,95 @@ document.addEventListener("DOMContentLoaded", async () => {
     products = [];
   }
 
-  // Load categories (optional)
-  let categories = [];
-  try {
-    categories = await fetch("data/categories.json").then(res => res.json());
-  } catch (e) {
-    console.warn("No categories.json found");
+  let activeCategory = "all";
+  let searchQuery = "";
+
+  /* ------------------------------
+     RENDER PRODUCT CARDS
+  --------------------------------*/
+  function renderProducts() {
+    let filtered = products;
+
+    // CATEGORY FILTER
+    if (activeCategory !== "all") {
+      filtered = filtered.filter(p => p.category === activeCategory);
+    }
+
+    // SEARCH FILTER
+    if (searchQuery.trim() !== "") {
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(searchQuery) ||
+        p.description.toLowerCase().includes(searchQuery)
+      );
+    }
+
+    // RENDER
+    grid.innerHTML = "";
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<p>No products found.</p>`;
+      return;
+    }
+
+    filtered.forEach(p => {
+      const card = document.createElement("a");
+      card.href = buildPageUrl("product.html", `?id=${p.id}`);
+      card.className = "product-card reveal-on-scroll";
+
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>$${p.price.toFixed(2)}</p>
+        <span class="tag ${p.stock === 0 ? "sold-out" : ""}">
+          ${p.stock === 0 ? "Sold Out" : "In Stock"}
+        </span>
+      `;
+
+      grid.appendChild(card);
+    });
+
+    initScrollReveal();
   }
 
-  // Render category filters if available
-  if (categories.length > 0) {
-    renderCategoryFilters(categories, products);
+  /* ------------------------------
+     CATEGORY BUTTONS
+  --------------------------------*/
+  filterButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      filterButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      activeCategory = btn.dataset.category; // "all", "digital services", etc.
+      renderProducts();
+    });
+  });
+
+  /* ------------------------------
+     SEARCH INPUT
+  --------------------------------*/
+  if (searchInput) {
+    searchInput.addEventListener("input", e => {
+      searchQuery = e.target.value.toLowerCase();
+      renderProducts();
+    });
   }
 
-  // Render search bar
-  renderSearchBar(products);
+  /* ------------------------------
+     INITIAL RENDER
+  --------------------------------*/
+  renderProducts();
 
-  // Render product cards
-  renderProducts(products, grid);
-
-  // Start the scroll and cursor effects
+  /* ------------------------------
+     EFFECTS
+  --------------------------------*/
   initSpotlight();
   initScrollReveal();
 });
 
+
+/* ------------------------------
+   BUILD PAGE URL
+--------------------------------*/
 function buildPageUrl(file, query = "") {
   let base = window.location.pathname;
 
@@ -53,75 +120,8 @@ function buildPageUrl(file, query = "") {
 
 
 /* ------------------------------
-   RENDER PRODUCT CARDS
+   SPOTLIGHT EFFECT
 --------------------------------*/
-function renderProducts(products, container) {
-  container.innerHTML = ""; // clear grid
-
-  products.forEach(p => {
-    const card = document.createElement("a");
-    card.href = buildPageUrl("product.html", `?id=${p.id}`);
-    card.className = "product-card reveal-on-scroll";
-
-    card.innerHTML = `
-    <img src="${p.image}" alt="${p.name}">
-    <h3>${p.name}</h3>
-    <p>$${p.price.toFixed(2)}</p>
-    <span class="tag ${p.stock === 0 ? "sold-out" : ""}">
-    ${p.stock === 0 ? "Sold Out" : "In Stock"}
-  </span>
-`;
-
-    container.appendChild(card);
-  });
-}
-
-
-/* ------------------------------
-   CATEGORY FILTERS
---------------------------------*/
-function renderCategoryFilters(categories, products) {
-  const filterContainer = document.getElementById("category-filters");
-  if (!filterContainer) return;
-
-  categories.forEach(cat => {
-    const btn = document.createElement("button");
-    btn.textContent = cat.name;
-
-    btn.addEventListener("click", () => {
-      const filtered = products.filter(p => p.category === cat.id);
-      const grid = document.getElementById("product-grid");
-      renderProducts(filtered, grid);
-    });
-
-    filterContainer.appendChild(btn);
-  });
-}
-
-
-/* ------------------------------
-   SEARCH BAR
---------------------------------*/
-function renderSearchBar(products) {
-  const searchContainer = document.getElementById("search-bar");
-  if (!searchContainer) return;
-
-  const input = document.createElement("input");
-  input.placeholder = "Search…";
-
-  input.addEventListener("input", () => {
-    const query = input.value.toLowerCase();
-    const filtered = products.filter(p =>
-      p.name.toLowerCase().includes(query) ||
-      p.description.toLowerCase().includes(query)
-    );
-    const grid = document.getElementById("product-grid");
-    renderProducts(filtered, grid);
-  });
-
-  searchContainer.appendChild(input);
-}
-
 function initSpotlight() {
   const spotlight = document.createElement("div");
   spotlight.className = "spotlight-overlay";
@@ -153,6 +153,10 @@ function initSpotlight() {
   }, { passive: true });
 }
 
+
+/* ------------------------------
+   SCROLL REVEAL
+--------------------------------*/
 function initScrollReveal() {
   const revealTargets = document.querySelectorAll("section, .product-card");
   revealTargets.forEach(el => el.classList.add("reveal-on-scroll"));
