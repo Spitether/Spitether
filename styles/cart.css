@@ -20,6 +20,102 @@
 .cart-item-info p {
   margin-bottom: 4px;
 }
+/* ============================================
+   MARIONETTE THEME — ORDER SUMMARY (CART PAGE)
+============================================ */
+
+.cart-summary {
+  background: linear-gradient(180deg, #3d0f17 0%, #2b0f14 100%);
+  border: 3px solid #d9b27c; /* gold rope */
+  border-radius: 18px;
+  padding: 1.8rem 1.6rem;
+  color: #fdf5f7;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.55);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Rope divider at top */
+.cart-summary::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: repeating-linear-gradient(
+    45deg,
+    #d9b27c 0px,
+    #d9b27c 6px,
+    #b38a5e 6px,
+    #b38a5e 12px
+  );
+  border-radius: 6px;
+}
+
+/* Spotlight glow on hover */
+.cart-summary:hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.12), transparent 70%);
+  pointer-events: none;
+}
+
+/* Title */
+.cart-summary h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.5rem;
+  margin-bottom: 1.2rem;
+  color: #fdf5f7;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+
+/* Rows */
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  font-size: 1rem;
+  color: #fdf5f7;
+  border-bottom: 1px solid rgba(217,178,124,0.25);
+}
+
+.summary-row:last-of-type {
+  border-bottom: none;
+}
+
+/* Total row */
+.summary-total {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 2px solid rgba(217,178,124,0.45);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffd9e3;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+
+/* Checkout button */
+#checkout-button {
+  margin-top: 1.6rem;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  background: linear-gradient(180deg, #7a1f2f, #5a1622);
+  color: #fff;
+  border: 2px solid #d9b27c;
+  border-radius: 12px;
+  font-family: "Playfair Display", serif;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+}
+
+#checkout-button:hover {
+  background: linear-gradient(180deg, #8c2438, #6a1a28);
+  transform: translateY(-3px);
+}
 
 /* ---------- QUANTITY BUTTONS ---------- */
 .qty-controls {
@@ -58,4 +154,245 @@
 .cancel-container p {
   color: #6a5c48;
   margin-bottom: 24px;
+}
+
+/* ============================================
+   MARIONETTE THEME — CART ITEMS
+============================================ */
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  margin-bottom: 2rem;
+}
+
+/* Each item card */
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1.2rem;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #3d0f17 0%, #2b0f14 100%);
+  border: 3px solid #d9b27c; /* gold rope */
+  box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+}
+
+/* Puppet string accent */
+.cart-item::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 18%;
+  width: 2px;
+  height: 80px;
+  background: linear-gradient(to bottom, #d9b27c, transparent);
+}
+
+.cart-item::after {
+  content: "";
+  position: absolute;
+  top: 30px;
+  left: calc(18% - 6px);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d9b27c;
+}
+
+/* Spotlight hover */
+.cart-item:hover {
+  box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+}
+
+.cart-item:hover::after {
+  background: #e8c892;
+}
+
+/* Product image */
+.cart-item img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #d9b27c;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+}
+
+/* Details */
+.cart-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Title */
+.cart-item-title {
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+  color: #fdf5f7;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+
+/* Price */
+.cart-item-price {
+  font-family: "Crimson Text", serif;
+  font-size: 1.1rem;
+  color: #ffd9e3;
+  font-weight: 600;
+}
+
+/* Remove button (enhanced) */
+.remove-item {
+  align-self: flex-start;
+  margin-top: 0.4rem;
+  background: linear-gradient(180deg, #7a1f2f, #5a1622);
+  color: #fdf5f7;
+  border: 2px solid #d9b27c;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-family: "Playfair Display", serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+}
+
+.remove-item:hover {
+  background: linear-gradient(180deg, #8c2438, #6a1a28);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   MARIONETTE THEME — REMOVE BUTTON
+============================================ */
+
+.remove-item {
+  background: linear-gradient(180deg, #7a1f2f, #5a1622);
+  color: #fdf5f7;
+  border: 2px solid #d9b27c;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-family: "Playfair Display", serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+}
+
+.remove-item:hover {
+  background: linear-gradient(180deg, #8c2438, #6a1a28);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   MARIONETTE THEME — CART FOOTER FIX
+============================================ */
+
+.page-cart .site-footer {
+  background: linear-gradient(180deg, #2b0f14 0%, #1a0a0d 100%);
+  border-top: 4px solid #d9b27c;
+  padding: 28px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Curtain folds */
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.25) 0px,
+      rgba(0,0,0,0.25) 4px,
+      transparent 4px,
+      transparent 14px
+    );
+
+  box-shadow: 0 -8px 22px rgba(0,0,0,0.55);
+}
+
+.page-cart .site-footer a,
+.page-cart .site-footer span {
+  color: #fdf5f7;
+  font-size: 1rem;
+  font-family: "Playfair Display", serif;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+
+.page-cart .site-footer a:hover {
+  color: #d9b27c;
+}
+
+/* ============================================
+   MARIONETTE THEME — CHECKOUT BUTTON
+   (Gold shimmer + click animation)
+============================================ */
+
+#checkout-button {
+  background: linear-gradient(180deg, #6a2a72, #4a1f52);
+  color: #fdf5f7;
+  border: 2px solid #d9b27c;
+  padding: 1rem 1.3rem;
+  width: 100%;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-family: "Playfair Display", serif;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: 0.25s ease;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45);
+}
+
+/* Gold shimmer sweep */
+#checkout-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 230, 150, 0.55) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: 0.6s ease;
+}
+
+#checkout-button:hover::after {
+  left: 120%;
+}
+
+/* Hover lift */
+#checkout-button:hover {
+  background: linear-gradient(180deg, #7d3388, #552060);
+  transform: translateY(-3px);
+}
+
+/* CLICK ANIMATION — press + gold flash */
+#checkout-button:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 18px rgba(217,178,124,0.65);
+}
+
+/* Gold pulse on click */
+#checkout-button:active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,230,150,0.35), transparent 70%);
+  pointer-events: none;
+  animation: goldPulse 0.4s ease;
+}
+
+@keyframes goldPulse {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.3); }
 }

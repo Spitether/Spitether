@@ -93,69 +93,172 @@
   background-color: #cbb48f;
 }
 
-/* CONTACT FORM STYLING */
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  margin-top: 1.5rem;
+/* ============================================
+   MARIONETTE THEME — CONTACT CARD (PURPLE VELVET)
+============================================ */
+
+.page-contact .contact-card {
+  background: linear-gradient(180deg, #4a264f 0%, #2b1b2f 100%);
+  border: 3px solid #d9b27c; /* gold rope */
+  border-radius: 22px;
+  padding: 2.4rem;
+  box-shadow: 0 22px 48px rgba(0,0,0,0.55);
+  position: relative;
+  overflow: hidden;
+  color: #fdf5f7;
 }
 
-.contact-form label {
-  font-weight: 600;
-  color: #4a4a4a;
-  font-size: 0.95rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+/* Gold rope top border */
+.page-contact .contact-card::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: repeating-linear-gradient(
+    45deg,
+    #d9b27c 0px,
+    #d9b27c 6px,
+    #b38a5e 6px,
+    #b38a5e 12px
+  );
+  border-radius: 6px;
 }
 
-.contact-form input,
-.contact-form textarea {
+/* Puppet string accent */
+.page-contact .contact-card::after {
+  content: "";
+  position: absolute;
+  top: 40px;
+  left: 22%;
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(to bottom, #d9b27c, transparent);
+}
+
+/* Title */
+.page-contact .contact-card h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.7rem;
+  color: #fdf5f7;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+  margin-bottom: 1.6rem;
+}
+
+/* Form fields */
+.page-contact .contact-form input,
+.page-contact .contact-form textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #d8d8d8;
-  background: #fafafa;
-  font-size: 0.95rem;
-  transition: all 0.25s ease;
-  font-family: inherit;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-  border-color: #b8c4a6; /* soft earthy green */
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(184, 196, 166, 0.25);
-  outline: none;
-}
-
-.contact-form textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-/* BUTTON */
-.contact-form .btn {
-  background: #b8c4a6; /* earthy green */
-  color: #ffffff;
-  padding: 0.75rem 1.2rem;
-  border: none;
-  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  border: 2px solid #b38a5e;
+  background: #fdf5f7;
+  color: #3d0f17;
   font-size: 1rem;
-  font-weight: 600;
+  font-family: "Crimson Text", serif;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  transition: 0.25s ease;
+}
+
+.page-contact .contact-form input:focus,
+.page-contact .contact-form textarea:focus {
+  border-color: #d9b27c;
+  box-shadow: 0 0 0 4px rgba(217,178,124,0.35);
+  background: #ffffff;
+}
+
+/* Labels */
+.page-contact .contact-form label {
+  color: #fdf5f7;
+  font-family: "Playfair Display", serif;
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+/* ============================================
+   SEND BUTTON — GOLD SHIMMER ANIMATION
+============================================ */
+
+.page-contact .contact-form .btn {
+  margin-top: 1.4rem;
+  background: linear-gradient(180deg, #6a2a72, #4a1f52);
+  color: #fdf5f7;
+  border: 2px solid #d9b27c;
+  padding: 1rem 1.3rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-family: "Playfair Display", serif;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  transition: 0.25s ease;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45);
 }
 
-.contact-form .btn:hover {
-  background: #a3b18a;
-  transform: translateY(-2px);
+/* Gold shimmer sweep */
+.page-contact .contact-form .btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 230, 150, 0.55) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: 0.6s ease;
 }
 
-.contact-form .btn:active {
-  transform: translateY(0);
+.page-contact .contact-form .btn:hover::after {
+  left: 120%;
 }
+
+.page-contact .contact-form .btn:hover {
+  background: linear-gradient(180deg, #7d3388, #552060);
+  transform: translateY(-3px);
+}
+
+/* ============================================
+   CONTACT INFO PANEL (RIGHT SIDE)
+============================================ */
+
+.page-contact .contact-info {
+  background: linear-gradient(180deg, #3a1e3f 0%, #241424 100%);
+  border: 2px solid #b38a5e;
+  border-radius: 18px;
+  padding: 1.8rem;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.45);
+  color: #fdf5f7;
+}
+
+.page-contact .contact-info h2 {
+  font-family: "Playfair Display", serif;
+  color: #fdf5f7;
+  margin-bottom: 0.6rem;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.45);
+}
+
+.page-contact .contact-info p,
+.page-contact .contact-info li {
+  font-family: "Crimson Text", serif;
+  font-size: 1rem;
+  color: #fdf5f7;
+}
+
+/* ============================================
+   PAGE BACKGROUND
+============================================ */
+
+.page-contact {
+  background: radial-gradient(circle at center, #2b1b2f 0%, #1a0a0d 70%);
+  padding-bottom: 4rem;
+}
+
 
 /* MOBILE FRIENDLY */
 @media (max-width: 600px) {
@@ -708,3 +811,4 @@
   background: var(--earthy-green);
   color: white;
 }
+

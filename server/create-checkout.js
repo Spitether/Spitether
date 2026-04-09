@@ -66,10 +66,12 @@ exports.handler = async function(event) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
-      line_items: lineItems,
+      line_items,
+      metadata: {
+        cart: JSON.stringify(cart)
+      },
       success_url: "https://shop-spitether.netlify.app/success.html",
-      cancel_url: "https://shop-spitether.netlify.app/cancel.html",
-      automatic_payment_methods: { enabled: true }
+      cancel_url: "https://shop-spitether.netlify.app/cancel.html"
     });
 
     return {
