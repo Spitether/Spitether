@@ -5,12 +5,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   const searchInput = document.getElementById("search-input");
   const filterButtons = document.querySelectorAll(".filter-btn");
 
-  // Load products
+  // Load products (Supabase + local fallback)
   let products = [];
   try {
-    products = await fetch("./data/products.json").then(res => res.json());
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      console.warn("Supabase failed, loading local data/products.json");
+      const localRes = await fetch("./data/products.json");
+      products = await localRes.json();
+    } else {
+      products = data;
+    }
   } catch (err) {
     console.error("Error loading products", err);
+    // Final fallback: static data
     products = [];
   }
 
@@ -50,9 +62,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.className = "product-card reveal-on-scroll";
 
       card.innerHTML = `
-        <img src="${p.image}" alt="${p.name}">
+        <img src="${p.image_url}" alt="${p.name}">
         <h3>${p.name}</h3>
-        <p>$${p.price.toFixed(2)}</p>
+        <p class="price">
+          ${
+            p.sale && p.compare_at && p.compare_at > p.price
+              ? `
+              <span class="sale-price">$${p.price.toFixed(2)}</span>
+              <span class="original-price">$${p.compare_at.toFixed(2)}</span>
+              <span class="sale-badge">SALE</span>
+              `
+            : `$${p.price.toFixed(2)}`
+          }
+        </p>
         <span class="tag ${p.stock === 0 ? "sold-out" : ""}">
           ${p.stock === 0 ? "Sold Out" : "In Stock"}
         </span>
@@ -72,17 +94,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       filterButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
-      activeCategory = btn.dataset.category; // "all", "digital services", etc.
+      activeCategory = btn.dataset.category;
       renderProducts();
     });
   });
 
   /* ------------------------------
-     SEARCH INPUT
+     SEARCH INPUT (LIMITED)
   --------------------------------*/
   if (searchInput) {
     searchInput.addEventListener("input", e => {
-      searchQuery = e.target.value.toLowerCase();
+      searchQuery = e.target.value.toLowerCase().slice(0, 100);
       renderProducts();
     });
   }

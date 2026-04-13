@@ -2,15 +2,42 @@ import Stripe from "stripe";
 import fs from "fs";
 import path from "path";
 
+import { isRateLimited, recordRequest } from "./rate-limiter.js";
+import { validateCart, getSanitizedBody, ERRORS } from "../lib/sanitizer.js";
+
 export default async function handler(req, res) {
+  const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection?.remoteAddress || req.socket.remoteAddress || 'unknown';
+  const limitInfo = isRateLimited(ip, 'checkout');
+  
+  if (limitInfo.limited) {
+    return res.status(429).json({ 
+      error: 'Too many requests', 
+      remaining: limitInfo.remaining, 
+      retry_after: limitInfo.ttl 
+    });
+  }
+  
+  recordRequest(ip, 'checkout');
+  
   try {
     // Resolve the JSON file inside the serverless bundle
     const filePath = path.join(process.cwd(), "api", "apiproducts.json");
     const fileData = fs.readFileSync(filePath, "utf8");
     const products = JSON.parse(fileData);
 
+    // Sanitize & validate body
+    const body = getSanitizedBody(req, 500); // 500KB max
+    if (!body) {
+      return res.status(400).json({ error: ERRORS.MALFORMED_JSON });
+    }
+
+    const { cart } = body;
+    const cartValidation = validateCart(cart, 50, 500);
+    if (!cartValidation.valid) {
+      return res.status(400).json({ error: cartValidation.error });
+    }
+
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-    const { cart } = req.body;
 
     const lineItems = cart.map(cartItem => {
       const product = products.find(p => p.id === cartItem.id);

@@ -44,17 +44,17 @@
       <form id="contact-form" action="https://formspree.io/f/mjgpldbo" method="POST" class="contact-form">
         <label>
           Your Name
-          <input type="text" name="name" required>
+          <input type="text" name="name" required maxlength="100">
         </label>
 
         <label>
           Your Email
-          <input type="email" name="email" required>
+          <input type="email" name="email" required maxlength="100">
         </label>
 
         <label>
           Message
-          <textarea name="message" rows="5" required></textarea>
+          <textarea name="message" rows="5" required maxlength="1000"></textarea>
         </label>
 
         <button type="submit" class="btn" id="submit-btn">
@@ -99,5 +99,7 @@
   <script src="scripts/contact.js"></script>
   <script src="scripts/spotlight.js"></script>
   <script src="scripts/transition.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="scripts/supabase.js"></script>
 </body>
 </html>

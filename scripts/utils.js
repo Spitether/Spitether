@@ -2,6 +2,8 @@
 
 console.log("utils.js loaded");
 
+import { validateCart, isValidId, validateCartItem } from "../lib/sanitizer.js";
+
 /* ------------------------------
    FORMAT PRICE
    Converts cents → $X.XX
@@ -33,15 +35,36 @@ export async function loadJSON(path) {
 }
 
 /* ------------------------------
-   SAVE CART
+   SAVE CART (SANITIZED)
 --------------------------------*/
 export function saveCart(cart) {
+  const validation = validateCart(cart);
+  if (!validation.valid) {
+    console.warn('Invalid cart rejected:', validation.error);
+    return;
+  }
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 /* ------------------------------
-   LOAD CART
+   LOAD CART (SANITIZED)
 --------------------------------*/
 export function loadCart() {
-  return JSON.parse(localStorage.getItem("cart")) || [];
+  const raw = localStorage.getItem("cart");
+  if (!raw) return [];
+  
+  const parsed = JSON.parse(raw);
+  if (!Array.isArray(parsed)) return [];
+  
+  // Filter valid items only
+  const validCart = parsed.filter(validateCartItem);
+  const validation = validateCart(validCart);
+  
+  if (!validation.valid) {
+    console.warn('Invalid cart filtered:', validation.error);
+    localStorage.removeItem("cart"); // Purge bad data
+    return [];
+  }
+  
+  return validCart;
 }

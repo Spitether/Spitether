@@ -1,5 +1,6 @@
 // server/create-checkout.js
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const sanitizer = require("../lib/sanitizer.js");
 
 // Hardcoded products (can't use fs in serverless)
 const products = [
@@ -20,9 +21,27 @@ exports.handler = async function(event) {
   }
 
   try {
-    const { cart } = JSON.parse(event.body || "{}");
+    // Sanitize input with size limits & validation
+    const bodyStr = event.body || "{}";
+    const body = sanitizer.safeJSONParse(bodyStr, 500);
+    if (!body) {
+      return { 
+        statusCode: 400, 
+        body: JSON.stringify({ error: sanitizer.ERRORS.MALFORMED_JSON }) 
+      };
+    }
+
+    const { cart } = body;
+    const validation = sanitizer.validateCart(cart, 50, 500);
+    if (!validation.valid) {
+      return { 
+        statusCode: 400, 
+        body: JSON.stringify({ error: validation.error }) 
+      };
+    }
+
     if (!cart || cart.length === 0) {
-      return { statusCode: 400, body: "Cart is empty" };
+      return { statusCode: 400, body: JSON.stringify({ error: "Cart is empty" }) };
     }
     // Build product line items
     const line_items = cart.map(item => {
@@ -68,7 +87,7 @@ exports.handler = async function(event) {
       payment_method_types: ["card"],
       line_items,
       metadata: {
-        cart: JSON.stringify(cart)
+        cart: JSON.stringify(cart) // Already validated
       },
       success_url: "https://shop-spitether.netlify.app/success.html",
       cancel_url: "https://shop-spitether.netlify.app/cancel.html"

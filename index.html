@@ -43,11 +43,12 @@
       type="text" 
       placeholder="Search products..."
       class="search-bar"
+      maxlength="100"
   >
     </section>
 
     <section class="product-grid" id="product-grid">
-      <!-- Filled by app.js -->
+      <!-- Fil led by app.js -->
     </section>
   </main>
 
@@ -66,9 +67,11 @@
 </footer>
 
 
-  <script src="scripts/utils.js"></script>
+
   <script src="scripts/app.js"></script>
   <script src="scripts/spotlight.js"></script>
   <script src="scripts/transition.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="scripts/supabase.js"></script>
 </body>
 </html>

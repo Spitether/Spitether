@@ -1,12 +1,36 @@
+import { isValidId } from "../lib/sanitizer.js";
+import { loadCart, saveCart } from "./utils.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
-  const productId = params.get("id");
+  const productId = params.get("id")?.trim();
 
-  if (!productId) return;
+  if (!productId || !isValidId(productId)) {
+    alert("Invalid product ID");
+    window.location.href = './';
+    return;
+  }
 
-  const products = await fetch("/data/products.json").then(r => r.json());
-  const product = products.find(p => p.id === productId);
-  if (!product) return;
+  // ⭐ Fetch the single product from Supabase
+  const { data: product, error: productError } = await supabase
+    .from("products")
+    .select("*")
+    .eq("id", productId)
+    .single();
+
+  if (productError || !product) {
+    console.error("Product not found:", productError);
+    return;
+  }
+
+  // ⭐ Fetch all products for recommended section
+  const { data: allProducts, error: allError } = await supabase
+    .from("products")
+    .select("*");
+
+  if (allError) {
+    console.error("Error loading all products:", allError);
+  }
 
   renderProductInfo(product);
   setupGallery(product);
@@ -14,12 +38,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderTags(product);
   setupAddToCart(product);
   setupMobileCartBar(product);
-  renderRecommended(products, product);
-  renderReviews(product);
 
-  /* ⭐ ADD THESE HERE ⭐ */
+  if (allProducts) {
+    renderRecommended(allProducts, product);
+  }
+
   saveRecentlyViewed(product);
-  renderRecentlyViewed(products, product);
+  renderRecentlyViewed(allProducts || [], product);
 });
 
 /* ---------- CORE RENDER ---------- */
@@ -28,12 +53,13 @@ function renderProductInfo(product) {
   document.getElementById("product-title").textContent = product.name;
   const priceEl = document.getElementById("product-price");
 
-if (product.sale && product.compareAt) {
+if (product.sale && product.compare_at) {
   priceEl.innerHTML = `
     <span class="sale-price">$${product.price.toFixed(2)}</span>
-    <span class="compare-price">$${product.compareAt.toFixed(2)}</span>
+    <span class="compare-price">$${product.compare_at.toFixed(2)}</span>
   `;
-} else {
+}
+ else {
   priceEl.textContent = `$${product.price.toFixed(2)}`;
 }
 
@@ -50,7 +76,8 @@ function setupGallery(product) {
   const left = document.querySelector(".gallery-arrow.left");
   const right = document.querySelector(".gallery-arrow.right");
 
-  const images = product.images?.length ? product.images : [product.image];
+  const images = product.images?.length ? product.images : [product.image_url];
+
 
   images.forEach(src => {
     const img = document.createElement("img");
@@ -126,7 +153,7 @@ function setupAddToCart(product) {
 }
 
 function addToCart(product) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart = loadCart();
   const existing = cart.find(item => item.id === product.id);
 
   if (existing && existing.quantity >= product.stock) {
@@ -140,7 +167,7 @@ function addToCart(product) {
     cart.push({ id: product.id, quantity: 1 });
   }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
+  saveCart(cart);
   alert("Added to cart!");
 }
 
@@ -198,7 +225,12 @@ function renderRecommended(allProducts, currentProduct) {
   grid.innerHTML = "";
 
   const rec = allProducts
-    .filter(p => p.id !== currentProduct.id && p.category === currentProduct.category)
+    .filter(p =>
+      p.id !== currentProduct.id &&
+      p.category &&
+      currentProduct.category &&
+      p.category === currentProduct.category
+    )
     .slice(0, 3);
 
   rec.forEach(p => {
@@ -206,7 +238,7 @@ function renderRecommended(allProducts, currentProduct) {
     card.href = `product.html?id=${p.id}`;
     card.className = "recommended-card";
     card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}">
+      <img src="${p.image_url}" alt="${p.name}">
       <h4>${p.name}</h4>
       <p>$${p.price.toFixed(2)}</p>
     `;

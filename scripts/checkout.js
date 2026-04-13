@@ -1,5 +1,9 @@
 /* checkout.js — creates Stripe checkout session */
 
+import { loadCart, validateCart } from "./utils.js";
+import { ERRORS } from "../lib/sanitizer.js";
+import { isValidId } from "../lib/sanitizer.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("checkout.js loaded");
 
@@ -7,10 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!checkoutBtn) return;
 
   checkoutBtn.addEventListener("click", async () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const cart = loadCart();
 
     if (cart.length === 0) {
       alert("Your cart is empty.");
+      return;
+    }
+
+    const validation = validateCart(cart);
+    if (!validation.valid) {
+      alert(`Invalid cart: ${validation.error}`);
       return;
     }
 

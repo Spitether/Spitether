@@ -1,10 +1,13 @@
+import { loadCart, saveCart } from "./utils.js";
+import { isValidId, validateCartItem } from "../lib/sanitizer.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("cart.js loaded");
 
   const cartContainer = document.getElementById("cart-items");
 
-  // Load cart from localStorage
-  const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+// Load cart from localStorage (sanitized)
+  const storedCart = loadCart();
 
   // Load products from your JSON file
   const products = await fetch("./data/products.json")
@@ -92,17 +95,24 @@ function renderCart(items, container) {
    CART STORAGE HELPERS
 --------------------------------*/
 function updateCartQuantity(id, qty) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const item = cart.find(c => c.id === id);
-  if (item) item.quantity = qty;
-  localStorage.setItem("cart", JSON.stringify(cart));
+  if (!isValidId(id) || !Number.isInteger(qty) || qty < 1 || qty > 99) {
+    alert("Invalid quantity");
+    return;
+  }
+  let cart = loadCart();
+  const itemIndex = cart.findIndex(c => c.id === id);
+  if (itemIndex !== -1) {
+    cart[itemIndex].quantity = qty;
+    saveCart(cart);
+  }
   location.reload();
 }
 
 function removeFromCart(id) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  if (!isValidId(id)) return;
+  let cart = loadCart();
   cart = cart.filter(c => c.id !== id);
-  localStorage.setItem("cart", JSON.stringify(cart));
+  saveCart(cart);
   location.reload();
 }
 

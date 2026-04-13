@@ -2,22 +2,22 @@
   {
     "id": "sample-001",
     "name": "Sample Project",
-    "price": 250.00,
+    "price": 25.00,
     "stock": 5,
     "image": "images/products/sample-001.jpg",
     "category": "Digital Projects",
     "description": "A placeholder item to test your store.",
     "sale": true,
-    "compareAt": 300
+    "compareAt": 50
   },
   {
     "id": "sample-002",
-    "name": "Sample Project 2",
-    "price": 30.00,
+    "name": "Karate Chicken",
+    "price": 300.00,
     "stock": 5,
-    "image": "images/products/sample-002.jpg",
-    "category": "Digital Projects",
-    "description": "A placeholder item to test your store.",
+    "image": "images/products/sample-002.png",
+    "category": "Services",
+    "description": "Chicken kick against the force of wind.",
     "sale": false
   }
 ]
