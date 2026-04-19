@@ -1,8 +1,4 @@
-/* checkout.js — creates Stripe checkout session */
-
-import { loadCart, validateCart } from "./utils.js";
-import { ERRORS } from "../lib/sanitizer.js";
-import { isValidId } from "../lib/sanitizer.js";
+/* checkout.js - Standalone Stripe checkout button (no imports) */
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("checkout.js loaded");
@@ -11,21 +7,27 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!checkoutBtn) return;
 
   checkoutBtn.addEventListener("click", async () => {
-    const cart = loadCart();
+    // Simple cart load (no validation)
+    let cart = [];
+    try {
+      const raw = localStorage.getItem("cart");
+      if (raw) cart = JSON.parse(raw);
+    } catch (e) {
+      console.error("Cart parse error", e);
+    }
 
     if (cart.length === 0) {
       alert("Your cart is empty.");
       return;
     }
 
-    const validation = validateCart(cart);
-    if (!validation.valid) {
-      alert(`Invalid cart: ${validation.error}`);
+    // Basic validation
+    if (!cart.every(item => item.id && typeof item.quantity === 'number' && item.quantity > 0)) {
+      alert("Invalid cart items.");
       return;
     }
 
     try {
-      // Send cart to backend
       const response = await fetch("/api/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,25 +35,22 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (!response.ok) {
-        const body = await response.text();
-        console.error("Checkout request failed", response.status, body);
-        alert("There was an issue creating your checkout session.");
+        const errorText = await response.text();
+        console.error("API Error:", response.status, errorText);
+        alert("Checkout failed - server error. Try again.");
         return;
       }
 
       const data = await response.json();
-
-      if (!data.url) {
-        console.error("No checkout URL returned:", data);
-        alert("There was an issue creating your checkout session.");
-        return;
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("No payment URL received.");
       }
-
-      // Redirect to Stripe Checkout
-      window.location.href = data.url;
     } catch (err) {
-      console.error("Checkout request failed", err);
-      alert("There was an issue creating your checkout session.");
+      console.error("Checkout network error", err);
+      alert("Network error. Check connection and try again.");
     }
   });
 });
+
