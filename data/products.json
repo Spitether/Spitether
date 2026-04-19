@@ -2,18 +2,18 @@
   {
     "id": "sample-001",
     "name": "Sample Project",
-    "price": 25.00,
+    "price": 25,
     "stock": 5,
     "image": "images/products/sample-001.jpg",
     "category": "Digital Projects",
-    "description": "A placeholder item to test your store.",
+    "description": "Marionette's featured digital project.",
     "sale": true,
     "compareAt": 50
   },
   {
     "id": "sample-002",
     "name": "Karate Chicken",
-    "price": 300.00,
+    "price": 300,
     "stock": 5,
     "image": "images/products/sample-002.png",
     "category": "Services",

@@ -11,7 +11,7 @@ const products = [
     stock: 5,
     image: "images/products/sample-001.jpg",
     category: "digital",
-    description: "A placeholder item to test your store."
+description: "Marionette's featured digital project."
   }
 ];
 
